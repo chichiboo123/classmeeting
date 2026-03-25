@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>우리반 학급회의</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232C3E7A'/%3E%3Cpolygon points='16,5 27,14 5,14' fill='%23FF6B35'/%3E%3Crect x='7' y='13' width='18' height='14' rx='1' fill='white' opacity='.92'/%3E%3Crect x='10' y='16' width='5' height='4' rx='1' fill='%234ECDC4'/%3E%3Crect x='17' y='16' width='5' height='4' rx='1' fill='%234ECDC4'/%3E%3Crect x='13' y='21' width='6' height='6' rx='1' fill='%23F9CA24'/%3E%3C/svg%3E">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-gov.min.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -539,16 +540,16 @@
     flex-wrap: wrap;
   }
   .btn-prev, .btn-next {
-    padding: 12px 28px;
+    padding: 10px 20px;
     border-radius: 30px;
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     font-weight: 800;
     cursor: pointer;
     transition: all 0.2s;
     font-family: 'Pretendard GOV', sans-serif;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
   .btn-prev {
     background: #f0f0f0;
@@ -857,15 +858,31 @@
   }
   .help-modal.open { display: flex; }
   .help-modal-content {
-    width: min(560px, 100%);
+    width: min(520px, 100%);
     background: #fff;
-    border-radius: 16px;
+    border-radius: 20px;
     padding: 22px;
+    max-height: 90vh;
+    overflow-y: auto;
   }
-  .help-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .help-close { border: none; background: #f2f2f2; border-radius: 8px; padding: 6px; cursor: pointer; }
-  .help-list { margin-left: 18px; line-height: 1.7; font-size: 0.92rem; color: #444; }
-  .help-footer { margin-top: 16px; font-size: 0.8rem; color: #777; text-align: center; }
+  .help-modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+  .help-modal-title-wrap {}
+  .help-modal-title { font-family: 'Black Han Sans', sans-serif; font-size: 1.2rem; color: var(--navy); }
+  .help-modal-sub { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .help-close { border: none; background: #f2f2f2; border-radius: 10px; padding: 6px 8px; cursor: pointer; flex-shrink: 0; }
+  .help-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .help-card {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #f7f8fc; border-radius: 14px; padding: 13px 15px;
+    font-size: 0.86rem; line-height: 1.55; color: #444;
+  }
+  .help-card strong { display: block; color: var(--text); font-size: 0.9rem; margin-bottom: 2px; }
+  .help-card-icon {
+    width: 36px; height: 36px; border-radius: 11px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .help-card-icon .material-icons { font-size: 1.15rem; color: #fff; }
+  .help-footer { font-size: 0.78rem; color: #aaa; text-align: center; padding-top: 10px; border-top: 1px solid #f0f0f0; }
 
   body.presentation-mode { background: var(--cream); }
   body.presentation-mode main { max-width: 1120px; padding-top: 18px; }
@@ -947,6 +964,27 @@
     flex-shrink: 0;
   }
   .pres-slide-point-icon .material-icons { font-size: 1.1rem; color: #fff; }
+
+  /* goal display in pres-slide */
+  .pres-goal-display {
+    max-width: 560px; width: 100%;
+    margin: 18px auto 0;
+    background: color-mix(in srgb, var(--step-color, var(--purple)) 12%, white);
+    border: 2.5px solid var(--step-color, var(--purple));
+    border-radius: 16px; padding: 14px 22px; text-align: center;
+  }
+  .pres-goal-label {
+    font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em;
+    color: var(--step-color, var(--purple)); margin-bottom: 8px;
+    text-transform: uppercase; opacity: 0.8;
+  }
+  .pres-goal-input {
+    width: 100%; border: none; background: transparent;
+    font-family: 'Black Han Sans', sans-serif; font-size: 1.35rem;
+    color: var(--text); outline: none; text-align: center;
+    caret-color: var(--step-color, var(--purple));
+  }
+  .pres-goal-input::placeholder { color: #ccc; font-family: 'Pretendard GOV', sans-serif; font-size: 0.9rem; font-weight: 400; }
 
   /* sub-slide paging within a step */
   .pres-slides-container { display: none; }
@@ -1069,7 +1107,7 @@
       <span class="progress-arrow">›</span>
     </li>
     <li class="progress-item">
-      <button class="progress-btn" style="--step-color:#9B59B6" onclick="goToStep(4)" id="nav-4">
+      <button class="progress-btn" style="--step-color:#FF85A1" onclick="goToStep(4)" id="nav-4">
         <span class="progress-num">5</span>
         <span class="progress-label">선생님말씀</span>
       </button>
@@ -1174,7 +1212,7 @@
 
   <div class="nav-buttons">
     <button class="btn-next" style="--step-color:#FF6B35; background:#FF6B35; border-color:#FF6B35; box-shadow:0 4px 16px rgba(255,107,53,0.35)" onclick="nextStep()">
-      다음 순서로 → <span>거울 회의</span>
+      다음 →
     </button>
   </div>
 </section>
@@ -1249,7 +1287,7 @@
   <div class="nav-buttons">
     <button class="btn-prev" onclick="prevStep()">← 이전</button>
     <button class="btn-next" style="background:#4ECDC4;border-color:#4ECDC4;box-shadow:0 4px 16px rgba(78,205,196,0.35)" onclick="nextStep()">
-      다음 순서로 → <span>목표 정하기</span>
+      다음 →
     </button>
   </div>
 </section>
@@ -1277,6 +1315,10 @@
       <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">how_to_vote</span></span><span>의견 발표 후 투표로 결정</span></li>
       <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">emoji_events</span></span><span>정해진 목표를 다 함께 읽겠습니다</span></li>
     </ul>
+    <div class="pres-goal-display" style="--step-color:#9B59B6">
+      <div class="pres-goal-label">📌 이달의 우리 반 목표</div>
+      <input type="text" id="presGoalInput" class="pres-goal-input" placeholder="기록 모드에서 목표를 입력하거나 여기서 바로 입력하세요" oninput="syncGoal('pres', this.value)">
+    </div>
   </div>
 
   <div class="scenario-box" style="border-left-color:#9B59B6">
@@ -1302,7 +1344,7 @@
 
     <div class="record-title"><span class="material-icons">emoji_events</span> 최종 결정된 목표 <span class="record-title-badge" style="background:#9B59B6">필수</span></div>
     <div class="info-pill"><span class="material-icons">check_circle</span> 투표 결과로 정해진 목표를 적어요</div>
-    <input type="text" class="record-textarea" id="finalGoal" placeholder="예) 쉬는 시간에 복도에서 뛰지 않기" style="display:block; height:auto; padding:13px 16px" oninput="updateGoalDisplay()">
+    <input type="text" class="record-textarea" id="finalGoal" placeholder="예) 쉬는 시간에 복도에서 뛰지 않기" style="display:block; height:auto; padding:13px 16px" oninput="syncGoal('record', this.value)">
     <div class="goal-display" id="goalDisplay">
       <div class="goal-display-label"><span class="material-icons">push_pin</span> 이달의 우리 반 목표</div>
       <div class="goal-display-text" id="goalDisplayText"></div>
@@ -1312,7 +1354,7 @@
   <div class="nav-buttons">
     <button class="btn-prev" onclick="prevStep()">← 이전</button>
     <button class="btn-next" style="background:#9B59B6;border-color:#9B59B6;box-shadow:0 4px 16px rgba(155,89,182,0.35)" onclick="nextStep()">
-      다음 순서로 → <span>제안하기</span>
+      다음 →
     </button>
   </div>
 </section>
@@ -1377,7 +1419,7 @@
   <div class="nav-buttons">
     <button class="btn-prev" onclick="prevStep()">← 이전</button>
     <button class="btn-next" style="background:#E8A020;border-color:#E8A020;box-shadow:0 4px 16px rgba(232,160,32,0.35)" onclick="nextStep()">
-      다음 순서로 → <span>선생님 말씀</span>
+      다음 →
     </button>
   </div>
 </section>
@@ -1386,28 +1428,28 @@
 <!-- ══════════════════════════════════
      STEP 5: 선생님 말씀
 ══════════════════════════════════ -->
-<section class="step-card" id="step-4" style="--step-color:#9B59B6">
+<section class="step-card" id="step-4" style="--step-color:#FF85A1">
   <div class="step-header">
-    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#9B59B6,#7d3c98)"><span class="material-icons">school</span></div>
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#FF85A1,#e8609a)"><span class="material-icons">school</span></div>
     <div class="step-title-wrap">
-      <div class="step-num" style="color:#9B59B6">STEP 5</div>
-      <div class="step-title" style="color:#9B59B6">선생님 말씀</div>
+      <div class="step-num" style="color:#FF85A1">STEP 5</div>
+      <div class="step-title" style="color:#FF85A1">선생님 말씀</div>
     </div>
   </div>
 
   <!-- 발표 슬라이드 -->
-  <div class="pres-slide" style="--step-color:#9B59B6">
+  <div class="pres-slide" style="--step-color:#FF85A1">
     <div class="pres-slide-badge">STEP 5</div>
-    <div class="pres-slide-icon" style="background:linear-gradient(135deg,#9B59B6,#7d3c98)"><span class="material-icons">school</span></div>
+    <div class="pres-slide-icon" style="background:linear-gradient(135deg,#FF85A1,#e8609a)"><span class="material-icons">school</span></div>
     <div class="pres-slide-title">선생님 말씀</div>
     <ul class="pres-slide-points">
-      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">self_improvement</span></span><span>바른 자세로 앉아 주세요</span></li>
-      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">hearing</span></span><span>선생님 말씀을 귀 기울여 듣겠습니다</span></li>
+      <li class="pres-slide-point" style="--step-color:#FF85A1"><span class="pres-slide-point-icon"><span class="material-icons">self_improvement</span></span><span>바른 자세로 앉아 주세요</span></li>
+      <li class="pres-slide-point" style="--step-color:#FF85A1"><span class="pres-slide-point-icon"><span class="material-icons">hearing</span></span><span>선생님 말씀을 귀 기울여 듣겠습니다</span></li>
     </ul>
   </div>
 
-  <div class="scenario-box" style="border-left-color:#9B59B6">
-    <div class="scenario-box-title" style="color:#9B59B6"><span class="material-icons">article</span> 사회자 대본</div>
+  <div class="scenario-box" style="border-left-color:#FF85A1">
+    <div class="scenario-box-title" style="color:#FF85A1"><span class="material-icons">article</span> 사회자 대본</div>
     <div class="scenario-text">다음은 담임 선생님 말씀을 듣겠습니다.
 선생님, 말씀 부탁드립니다. </div>
   </div>
@@ -1415,14 +1457,14 @@
   <div class="teacher-box">
     <span class="teacher-emoji"><span class="material-icons">school</span></span>
     <div class="teacher-prompt">선생님 말씀을 바른 자세로 귀 기울여 들어요! </div>
-    <div class="record-title" style="justify-content:center; margin-bottom:12px"><span class="material-icons">fact_check</span> 선생님 말씀 요약 <span class="record-title-badge" style="background:#9B59B6">기록</span></div>
+    <div class="record-title" style="justify-content:center; margin-bottom:12px"><span class="material-icons">fact_check</span> 선생님 말씀 요약 <span class="record-title-badge" style="background:#FF85A1">기록</span></div>
     <textarea class="record-textarea" id="teacher-note" rows="4" placeholder="선생님 말씀 중 중요한 내용을 정리해요&#10;예) 다음 주 현장 체험학습 준비물 안내, 급식 예절 지키기 강조"></textarea>
   </div>
 
   <div class="nav-buttons">
     <button class="btn-prev" onclick="prevStep()">← 이전</button>
-    <button class="btn-next" style="background:#9B59B6;border-color:#9B59B6;box-shadow:0 4px 16px rgba(155,89,182,0.35)" onclick="nextStep()">
-      마지막 순서로 → <span>폐회 선언</span>
+    <button class="btn-next" style="background:#FF85A1;border-color:#FF85A1;box-shadow:0 4px 16px rgba(255,133,161,0.35)" onclick="nextStep()">
+      다음 →
     </button>
   </div>
 </section>
@@ -1504,18 +1546,37 @@
 <div class="help-modal" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle">
   <div class="help-modal-content">
     <div class="help-modal-header">
-      <h3 id="helpModalTitle">서비스 사용법</h3>
+      <div class="help-modal-title-wrap">
+        <div class="help-modal-title" id="helpModalTitle">사용법</div>
+        <div class="help-modal-sub">우리반 학급회의 도우미</div>
+      </div>
       <button class="help-close" onclick="closeHelpModal()" aria-label="닫기">
         <span class="material-icons">close</span>
       </button>
     </div>
-    <ol class="help-list">
-      <li>기록모드에서는 각 단계의 기록 입력란을 채우고 필요 시 사회자 대본을 펼쳐 확인하세요.</li>
-      <li>발표모드는 핵심 진행 문구를 크게 보여 주는 슬라이드형 화면입니다.</li>
-      <li>6단계에서 회의 결과를 클립보드, TXT, JSON으로 저장할 수 있습니다.</li>
-      <li>JSON 파일 열기 버튼으로 이전 회의 기록을 복원할 수 있습니다.</li>
-    </ol>
-    <div class="help-footer">개발/제작: 교육뮤지컬 꿈꾸는 치수쌤</div>
+    <div class="help-cards">
+      <div class="help-card">
+        <span class="help-card-icon" style="background:#4ECDC4"><span class="material-icons">edit_note</span></span>
+        <div><strong>기록 모드</strong>각 단계를 순서대로 진행하며 회의 내용을 입력해요. 사회자 대본은 탭을 눌러 펼칠 수 있어요.</div>
+      </div>
+      <div class="help-card">
+        <span class="help-card-icon" style="background:#FF6B35"><span class="material-icons">slideshow</span></span>
+        <div><strong>발표 모드</strong>단계별 핵심 안내를 슬라이드 형식으로 보여줘요. 화면에 띄워 학급 전체가 볼 수 있게 해요.</div>
+      </div>
+      <div class="help-card">
+        <span class="help-card-icon" style="background:#9B59B6"><span class="material-icons">swap_horiz</span></span>
+        <div><strong>단계 이동</strong>하단 '다음 →' 버튼 또는 상단 진행 탭을 눌러 단계를 이동할 수 있어요.</div>
+      </div>
+      <div class="help-card">
+        <span class="help-card-icon" style="background:#E8A020"><span class="material-icons">push_pin</span></span>
+        <div><strong>목표 연동</strong>STEP 3에서 입력한 목표는 발표 모드에서도 표시·수정할 수 있어요.</div>
+      </div>
+      <div class="help-card">
+        <span class="help-card-icon" style="background:#2ECC71"><span class="material-icons">ios_share</span></span>
+        <div><strong>결과 저장</strong>STEP 6에서 회의 결과를 클립보드·TXT·JSON으로 저장하거나 JSON 파일로 불러올 수 있어요.</div>
+      </div>
+    </div>
+    <div class="help-footer">Created by. 교육뮤지컬 꿈꾸는 치수쌤</div>
   </div>
 </div>
 
@@ -1526,7 +1587,7 @@
   const STEPS = 6;
   let currentStep = 0;
 
-  const STEP_COLORS = ['#FF6B35','#4ECDC4','#9B59B6','#E8A020','#9B59B6','#2ECC71'];
+  const STEP_COLORS = ['#FF6B35','#4ECDC4','#9B59B6','#E8A020','#FF85A1','#2ECC71'];
 
   // Dynamic lists
   let goalOpinions = [];   // [{text}]
@@ -1544,6 +1605,9 @@
     syncMonth();
     initScriptAccordions();
     setMode('record');
+    // 초기 목표값 동기화
+    const initGoal = document.getElementById('finalGoal').value;
+    if (initGoal) syncGoal('record', initGoal);
   });
 
   // Month sync
@@ -1674,13 +1738,20 @@
     });
   }
 
-  function updateGoalDisplay() {
-    const val = document.getElementById('finalGoal').value.trim();
+  function syncGoal(source, val) {
+    const recordInput = document.getElementById('finalGoal');
+    const presInput   = document.getElementById('presGoalInput');
     const disp = document.getElementById('goalDisplay');
     const txt  = document.getElementById('goalDisplayText');
-    if (val) {
+    if (source === 'record') {
+      if (presInput) presInput.value = val;
+    } else {
+      recordInput.value = val;
+    }
+    const trimmed = val.trim();
+    if (trimmed) {
       disp.style.display = 'block';
-      txt.textContent = val;
+      txt.textContent = trimmed;
     } else {
       disp.style.display = 'none';
     }
