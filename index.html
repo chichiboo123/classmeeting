@@ -1,431 +1,1526 @@
-<!doctype html>
-<html><head><meta charset="utf-8"><style>body{
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans KR', Arial, sans-serif;
-  padding: 20px;
-  background: #eaf3ff;
-  text-align: center;
-}
-h1{ color:#1e40af }
-button{
-  background:#2563eb; color:white; border:0; padding:10px 18px; border-radius:10px;
-}
-button:hover{ filter:brightness(.95) }</style></head>
-<body>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>나세나반 학급 회의</title>
-    
-    <!-- 기본 폰트: Pretendard -->
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-gov.min.css" />
-    <!-- 디자인 폰트: Black Han Sans -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Pretendard', 'sans-serif'],
-                        display: ['"Black Han Sans"', 'sans-serif'],
-                    },
-                    colors: {
-                        kidprimary: '#FF9EAA',
-                        kidsecondary: '#3AC0FF',
-                        kidbg: '#FFFBF0',
-                        kidbox: '#FFFFFF'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* 커스텀 스크롤바 */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #FF9EAA; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #ff7a8a; }
-        
-        .fade-in { animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우리반 학급회의</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-gov.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange:  #FF6B35;
+    --teal:    #4ECDC4;
+    --purple:  #9B59B6;
+    --yellow:  #F9CA24;
+    --green:   #2ECC71;
+    --pink:    #FF85A1;
+    --navy:    #2C3E7A;
+    --cream:   #FFFBF0;
+    --white:   #FFFFFF;
+    --text:    #2C2C2C;
+    --muted:   #888;
+    --radius:  18px;
+    --shadow:  0 4px 20px rgba(0,0,0,0.10);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.13);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Pretendard GOV', 'Pretendard', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(44,62,122,0.18);
+  }
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .header-emoji { font-size: 2rem; }
+  .header-titles { flex: 1; }
+  .header-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.45rem;
+    color: var(--white);
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+  }
+  .header-subtitle {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.65);
+    margin-top: 2px;
+    letter-spacing: 0.01em;
+  }
+
+  /* month badge */
+  .month-badge-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .month-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+  .month-input {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.1rem;
+    width: 52px;
+    text-align: center;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 10px;
+    color: var(--yellow);
+    padding: 4px 6px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .month-input:focus { border-color: var(--yellow); }
+  .month-suffix { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
+
+  /* ── PROGRESS NAV ── */
+  .progress-nav {
+    background: var(--white);
+    border-bottom: 2px solid #eee;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .progress-nav::-webkit-scrollbar { display: none; }
+  .progress-list {
+    display: flex;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 12px;
+    list-style: none;
+    gap: 0;
+  }
+  .progress-item {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 1;
+    min-width: 0;
+  }
+  .progress-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 10px 6px 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .progress-btn:hover { background: #f8f8f8; }
+  .progress-btn.active { border-bottom-color: var(--step-color, var(--orange)); }
+  .progress-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    background: #eee;
+    color: #999;
+    transition: all 0.2s;
+  }
+  .progress-btn.active .progress-num,
+  .progress-btn.done .progress-num {
+    background: var(--step-color, var(--orange));
+    color: white;
+  }
+  .progress-btn.done .progress-num::after { content: '✓'; font-size: 0.85rem; }
+  .progress-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #aaa;
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+  .progress-btn.active .progress-label { color: var(--step-color, var(--orange)); }
+  .progress-btn.done .progress-label { color: var(--step-color, var(--orange)); opacity: 0.6; }
+  .progress-arrow {
+    font-size: 0.7rem;
+    color: #ddd;
+    flex-shrink: 0;
+    padding: 0 1px;
+  }
+
+  /* ── MAIN ── */
+  main {
+    flex: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 28px 20px 40px;
+  }
+
+  /* ── STEP CARD ── */
+  .step-card {
+    display: none;
+    animation: fadeUp 0.35s ease;
+  }
+  .step-card.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .step-icon-wrap {
+    width: 58px; height: 58px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    box-shadow: var(--shadow);
+  }
+  .step-title-wrap {}
+  .step-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    opacity: 0.6;
+    text-transform: uppercase;
+  }
+  .step-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.45rem;
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+  }
+
+  /* scenario box */
+  .scenario-box {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border-left: 5px solid var(--step-color, var(--orange));
+  }
+  .scenario-box-title {
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--step-color, var(--orange));
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .scenario-text {
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: #444;
+    white-space: pre-line;
+  }
+  .scenario-text .cue {
+    color: #aaa;
+    font-size: 0.82rem;
+    font-style: italic;
+  }
+  .scenario-text .highlight {
+    background: var(--yellow);
+    border-radius: 4px;
+    padding: 0 4px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* oath box */
+  .oath-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .oath-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 12px 16px;
+  }
+  .oath-num {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900;
+    font-size: 0.85rem;
+    color: white;
+    flex-shrink: 0;
+  }
+  .oath-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    padding-top: 5px;
+    font-weight: 600;
+  }
+
+  /* record section */
+  .record-section {
+    margin-top: 6px;
+  }
+  .record-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .record-title-badge {
+    font-size: 0.7rem;
+    font-family: 'Pretendard GOV', sans-serif;
+    font-weight: 700;
+    background: var(--step-color, var(--orange));
+    color: white;
+    border-radius: 20px;
+    padding: 2px 9px;
+    letter-spacing: 0.04em;
+  }
+
+  /* mirror cards */
+  .mirror-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  @media (max-width: 600px) {
+    .mirror-grid { grid-template-columns: 1fr; }
+  }
+  .mirror-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .mirror-card-header {
+    padding: 10px 14px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mirror-card textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 12px 14px;
+    font-family: 'Pretendard GOV', sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    resize: none;
+    min-height: 110px;
+    background: transparent;
+    color: var(--text);
+  }
+
+  /* team note section */
+  .team-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .team-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 8px 12px;
+    border-radius: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+
+  /* textarea generic */
+  textarea, input[type="text"] {
+    font-family: 'Pretendard GOV', sans-serif;
+  }
+
+  .record-textarea {
+    width: 100%;
+    border: 2px solid #eee;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 0.92rem;
+    line-height: 1.75;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: var(--white);
+    color: var(--text);
+  }
+  .record-textarea:focus {
+    border-color: var(--step-color, var(--orange));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--step-color, var(--orange)) 15%, transparent);
+  }
+  .record-textarea::placeholder { color: #bbb; }
+
+  /* suggestion entries */
+  .suggestion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .suggestion-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .suggestion-item-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--step-color, var(--orange));
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 10px;
+  }
+  .suggestion-item-fields {
+    flex: 1;
+    display: flex;
+    gap: 8px;
+  }
+  .suggestion-item-fields input {
+    flex: 1;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    padding: 9px 13px;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s;
+    background: var(--white);
+  }
+  .suggestion-item-fields input:focus { border-color: var(--step-color, var(--orange)); }
+  .suggestion-item-fields input::placeholder { color: #bbb; }
+  .suggestion-item-fields .reason-input { flex: 1.3; }
+
+  .btn-add {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 30px;
+    border: 2px dashed var(--step-color, var(--orange));
+    background: none;
+    color: var(--step-color, var(--orange));
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Pretendard GOV', sans-serif;
+  }
+  .btn-add:hover { background: color-mix(in srgb, var(--step-color, var(--orange)) 8%, transparent); }
+
+  .btn-remove {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    margin-top: 8px;
+    transition: color 0.2s;
+    flex-shrink: 0;
+  }
+  .btn-remove:hover { color: #ff6b6b; }
+
+  /* nav buttons */
+  .nav-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .btn-prev, .btn-next {
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Pretendard GOV', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-prev {
+    background: #f0f0f0;
+    border: 2px solid #e0e0e0;
+    color: #888;
+  }
+  .btn-prev:hover { background: #e5e5e5; }
+  .btn-next {
+    background: var(--step-color, var(--orange));
+    border: 2px solid var(--step-color, var(--orange));
+    color: white;
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--step-color, var(--orange)) 35%, transparent);
+  }
+  .btn-next:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px color-mix(in srgb, var(--step-color, var(--orange)) 40%, transparent);
+  }
+
+  /* ── STEP 5: Teacher ── */
+  .teacher-box {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px;
+    text-align: center;
+  }
+  .teacher-emoji { font-size: 4rem; margin-bottom: 12px; display: block; }
+  .teacher-prompt {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 18px;
+  }
+
+  /* ── STEP 6: Close ── */
+  .close-card {
+    background: var(--navy);
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    color: white;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .close-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+  .close-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .close-sub { color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-bottom: 20px; }
+
+  /* export section */
+  .export-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+  .export-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .export-desc { font-size: 0.85rem; color: var(--muted); margin-bottom: 18px; }
+  .export-preview {
+    background: #f8f8f8;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 0.82rem;
+    line-height: 1.75;
+    color: #555;
+    max-height: 220px;
+    overflow-y: auto;
+    margin-bottom: 18px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    border: 1px solid #eee;
+  }
+  .export-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn-export {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 20px;
+    border-radius: 30px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid;
+    font-family: 'Pretendard GOV', sans-serif;
+  }
+  .btn-export.clipboard { background: var(--teal); border-color: var(--teal); color: white; }
+  .btn-export.txt       { background: var(--orange); border-color: var(--orange); color: white; }
+  .btn-export.json      { background: var(--purple); border-color: var(--purple); color: white; }
+  .btn-export:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+  /* import section */
+  .import-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: 2px dashed #d0e8d0;
+  }
+  .import-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+  .import-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .btn-import {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 28px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #e8f8f0, #d4f5e4);
+    border: 2px solid var(--green);
+    color: #1a7a45;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Pretendard GOV', sans-serif;
+    text-decoration: none;
+  }
+  .btn-import:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(46,204,113,0.25);
+    background: linear-gradient(135deg, #d4f5e4, #b8eecf);
+  }
+  .import-icon { font-size: 2.2rem; line-height: 1; }
+  .import-label { font-size: 0.9rem; font-weight: 800; }
+
+  /* toast */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--navy);
+    color: white;
+    padding: 11px 24px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 9999;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* chips */
+  .chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 10px 0 16px;
+  }
+  .chip {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: #f0f0f0;
+    color: #777;
+  }
+
+  /* tip box */
+  .tip-box {
+    background: color-mix(in srgb, var(--yellow) 15%, transparent);
+    border: 2px solid var(--yellow);
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    color: #7a6000;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .tip-box span:first-child { flex-shrink: 0; }
+
+  /* info pill */
+  .info-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--cream);
+    border: 1.5px solid #e0d8c8;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 10px;
+  }
+
+  /* footer */
+  footer {
+    background: var(--navy);
+    padding: 18px 24px;
+    text-align: center;
+  }
+  footer a {
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: color 0.2s;
+    letter-spacing: 0.04em;
+  }
+  footer a:hover { color: var(--yellow); }
+
+  /* divider */
+  .divider {
+    border: none;
+    border-top: 2px dashed #eee;
+    margin: 22px 0;
+  }
+
+  /* special: step 1 oath done */
+  .oath-done-banner {
+    background: linear-gradient(135deg, var(--green), #27ae60);
+    color: white;
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 16px;
+    display: none;
+  }
+
+  /* completion indicator */
+  .step-done-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--green);
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* goal display */
+  .goal-display {
+    background: linear-gradient(135deg, var(--purple), #8e44ad);
+    color: white;
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-top: 14px;
+    display: none;
+  }
+  .goal-display-label { font-size: 0.75rem; opacity: 0.7; margin-bottom: 4px; }
+  .goal-display-text  { font-family: 'Black Han Sans', sans-serif; font-size: 1.3rem; letter-spacing: 0.04em; }
+</style>
 </head>
-<body class="bg-kidbg text-gray-800 font-sans min-h-screen flex flex-col selection:bg-kidsecondary selection:text-white">
+<body>
 
-    <!-- 상단 헤더 -->
-    <header class="bg-kidprimary text-white p-4 shadow-md text-center">
-        <h1 class="font-display text-3xl md:text-4xl tracking-wide">✨ 나세나반 학급 회의 ✨</h1>
-    </header>
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="header-emoji">🏫</div>
+    <div class="header-titles">
+      <div class="header-title">우리반 학급회의</div>
+      <div class="header-subtitle">모두를 위한 학급회의 도우미</div>
+    </div>
+    <div class="month-badge-wrap">
+      <span class="month-label">회의 월</span>
+      <input class="month-input" type="number" id="monthInput" min="1" max="12" placeholder="0" value="">
+      <span class="month-suffix">월</span>
+    </div>
+  </div>
+</header>
 
-    <!-- 메인 컨텐츠 영역 -->
-    <main class="flex-grow flex flex-col items-center p-4 md:p-6 w-full max-w-3xl mx-auto">
-        
-        <!-- 진행 바 -->
-        <div class="w-full flex justify-between items-center mb-6 px-2">
-            <div class="flex space-x-2 w-full justify-center" id="progress-dots">
-                <!-- JS에서 동적 생성 -->
-            </div>
-        </div>
+<!-- PROGRESS NAV -->
+<nav class="progress-nav" aria-label="진행 단계">
+  <ul class="progress-list" id="progressList">
+    <li class="progress-item">
+      <button class="progress-btn active" style="--step-color:#FF6B35" onclick="goToStep(0)" id="nav-0">
+        <span class="progress-num">1</span>
+        <span class="progress-label">개회선언</span>
+      </button>
+      <span class="progress-arrow">›</span>
+    </li>
+    <li class="progress-item">
+      <button class="progress-btn" style="--step-color:#4ECDC4" onclick="goToStep(1)" id="nav-1">
+        <span class="progress-num">2</span>
+        <span class="progress-label">거울회의</span>
+      </button>
+      <span class="progress-arrow">›</span>
+    </li>
+    <li class="progress-item">
+      <button class="progress-btn" style="--step-color:#9B59B6" onclick="goToStep(2)" id="nav-2">
+        <span class="progress-num">3</span>
+        <span class="progress-label">목표정하기</span>
+      </button>
+      <span class="progress-arrow">›</span>
+    </li>
+    <li class="progress-item">
+      <button class="progress-btn" style="--step-color:#F9CA24" onclick="goToStep(3)" id="nav-3">
+        <span class="progress-num">4</span>
+        <span class="progress-label">제안하기</span>
+      </button>
+      <span class="progress-arrow">›</span>
+    </li>
+    <li class="progress-item">
+      <button class="progress-btn" style="--step-color:#9B59B6" onclick="goToStep(4)" id="nav-4">
+        <span class="progress-num">5</span>
+        <span class="progress-label">선생님말씀</span>
+      </button>
+      <span class="progress-arrow">›</span>
+    </li>
+    <li class="progress-item">
+      <button class="progress-btn" style="--step-color:#2ECC71" onclick="goToStep(5)" id="nav-5">
+        <span class="progress-num">6</span>
+        <span class="progress-label">폐회선언</span>
+      </button>
+    </li>
+  </ul>
+</nav>
 
-        <!-- 카드 컨테이너 -->
-        <div class="bg-kidbox w-full rounded-3xl shadow-xl p-6 md:p-8 border-4 border-yellow-100 flex-grow flex flex-col">
-            
-            <!-- 단계별 컨텐츠가 표시될 곳 -->
-            <div id="step-content" class="flex-grow fade-in">
-                <!-- JS에서 내용 주입 -->
-            </div>
+<main>
 
-            <!-- 네비게이션 버튼 -->
-            <div class="flex justify-between mt-8 pt-4 border-t-2 border-gray-100">
-                <button id="btn-prev" onclick="prevStep()" class="hidden px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-2xl text-lg transition-colors">
-                    ◀ 이전으로
-                </button>
-                <div class="flex-grow"></div>
-                <button id="btn-next" onclick="nextStep()" class="px-8 py-3 bg-kidsecondary hover:bg-blue-400 text-white font-bold rounded-2xl text-lg shadow-md transition-transform transform hover:scale-105">
-                    다음으로 ▶
-                </button>
-                <button id="btn-finish" onclick="finishMeeting()" class="hidden px-8 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-2xl text-lg shadow-md transition-transform transform hover:scale-105">
-                    회의 마치기 🏁
-                </button>
-            </div>
-        </div>
-    </main>
+<!-- ══════════════════════════════════
+     STEP 1: 개회선언 & 우리반 약속 선서
+══════════════════════════════════ -->
+<section class="step-card active" id="step-0" style="--step-color:#FF6B35">
+  <div class="step-header">
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#FF6B35,#e8522a)">📣</div>
+    <div class="step-title-wrap">
+      <div class="step-num" style="color:#FF6B35">STEP 1</div>
+      <div class="step-title" style="color:#FF6B35">개회선언 &amp; 우리반 약속 선서</div>
+    </div>
+  </div>
 
-    <!-- 하단 푸터 -->
-    <footer class="bg-gray-800 text-gray-300 text-center py-4 text-sm mt-auto">
-        <a href="https://litt.ly/chichiboo" target="_blank" class="hover:text-kidsecondary transition-colors font-bold text-base">
-            Created by. 교육뮤지컬 꿈꾸는 치수쌤
-        </a>
-    </footer>
+  <!-- 시나리오 -->
+  <div class="scenario-box">
+    <div class="scenario-box-title">📜 사회자 대본</div>
+    <div class="scenario-text">안녕하세요. 이제 우리반 학급회의를 시작하려고 합니다.
+친구들은 바르게 앉아 주시기 바랍니다.
 
-    <!-- 알림 모달 -->
-    <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full opacity-0 pointer-events-none transition-opacity duration-300 z-50">
-        복사되었습니다!
+지금부터 <span class="highlight" id="s1-month">0</span>월 우리반 학급회의를 시작합니다.
+먼저 우리반 약속을 함께 읽겠습니다.
+한 문장씩 제가 읽으면, 여러분은 따라 읽어 주십시오.</div>
+  </div>
+
+  <!-- 선서 -->
+  <div class="record-section">
+    <div class="record-title">
+      🤝 우리반 약속 선서
+      <span class="record-title-badge">함께 읽어요</span>
+    </div>
+    <div class="oath-list">
+      <div class="oath-item">
+        <div class="oath-num" style="background:#FF6B35">첫</div>
+        <div class="oath-text">나의 마음과 생각을 깊이 들여다보겠습니다.</div>
+      </div>
+      <div class="oath-item">
+        <div class="oath-num" style="background:#4ECDC4">둘</div>
+        <div class="oath-text">세상을 따뜻한 눈으로 바라보겠습니다.</div>
+      </div>
+      <div class="oath-item">
+        <div class="oath-num" style="background:#9B59B6">셋</div>
+        <div class="oath-text">내가 나눌 수 있는 것을 생각하고 나눔을 실천하겠습니다.</div>
+      </div>
+    </div>
+    <div class="oath-done-banner" id="oathBanner">🎉 선서 완료! 우리 반 최고예요! 👏</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 메모 -->
+  <div class="record-section">
+    <div class="record-title">✏️ 개회 메모 <span class="record-title-badge">기록</span></div>
+    <div class="info-pill">💡 참석 인원이나 특이 사항을 적어요</div>
+    <textarea class="record-textarea" id="record-open" rows="3" placeholder="예) 오늘 참석 인원: 26명 / 결석: 이○○ (사유: 병결)"></textarea>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-next" style="--step-color:#FF6B35; background:#FF6B35; border-color:#FF6B35; box-shadow:0 4px 16px rgba(255,107,53,0.35)" onclick="nextStep()">
+      다음 순서로 → <span>거울 회의</span>
+    </button>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     STEP 2: 거울(돌아보기) 회의
+══════════════════════════════════ -->
+<section class="step-card" id="step-1" style="--step-color:#4ECDC4">
+  <div class="step-header">
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#4ECDC4,#38b2aa)">🪞</div>
+    <div class="step-title-wrap">
+      <div class="step-num" style="color:#4ECDC4">STEP 2</div>
+      <div class="step-title" style="color:#4ECDC4">거울(돌아보기) 회의</div>
+    </div>
+  </div>
+
+  <div class="scenario-box" style="border-left-color:#4ECDC4">
+    <div class="scenario-box-title" style="color:#4ECDC4">📜 사회자 대본</div>
+    <div class="scenario-text">다음은 거울(돌아보기) 회의 시간입니다.
+거울 회의는 좋았던 점, 아쉬웠던 점, 바라는 점을 이야기하는 시간입니다.
+
+먼저 자치팀별로 모여 이야기를 나누겠습니다.
+좋았던 점, 아쉬웠던 점, 바라는 점을 차례대로 이야기해 주세요.
+친구의 말을 끊지 않고 끝까지 잘 들어주면 좋겠습니다. <span class="cue">（잠시 회의 시간）</span>
+
+이제 자치팀별 발표를 시작하겠습니다.
+00팀 발표자 학생부터 차례대로 일어나 발표해 주세요.
+
+발표한 학생들에게 박수를 쳐줍시다. 👏
+친구들의 의견을 잘 들으며 우리 반을 더 좋은 반으로 만들어 가면 좋겠습니다.</div>
+  </div>
+
+  <div class="record-section">
+    <div class="record-title">📝 팀별 의견 기록 <span class="record-title-badge" style="background:#4ECDC4">기록</span></div>
+    <div class="tip-box">
+      <span>💬</span>
+      <span>자치팀별로 발표한 내용을 아래 칸에 정리해요. 좋았던 점·아쉬웠던 점·바라는 점으로 구분해서 적으면 더 좋아요!</span>
     </div>
 
-    <!-- 스크립트 로직 -->
-    <script>
-        // 데이터 저장 객체
-        const meetingData = {
-            month: new Date().getMonth() + 1,
-            date: new Date().toLocaleDateString('ko-KR'),
-            reflection: { good: '', bad: '', wish: '' },
-            goal: '',
-            proposal: '',
-            teacherMsg: ''
-        };
+    <div class="mirror-grid">
+      <div class="mirror-card">
+        <div class="mirror-card-header" style="background:#2ECC71">😊 좋았던 점</div>
+        <textarea id="mirror-good" placeholder="우리 반에서 좋았던 점을 써요&#10;예) 체육 시간이 재미있었어요!"></textarea>
+      </div>
+      <div class="mirror-card">
+        <div class="mirror-card-header" style="background:#FF8C69">😢 아쉬웠던 점</div>
+        <textarea id="mirror-bad" placeholder="아쉬웠던 점을 솔직하게 써요&#10;예) 쉬는 시간이 너무 짧았어요"></textarea>
+      </div>
+      <div class="mirror-card">
+        <div class="mirror-card-header" style="background:#9B59B6">🌟 바라는 점</div>
+        <textarea id="mirror-wish" placeholder="앞으로 이랬으면 하는 것을 써요&#10;예) 청소를 모두 같이 했으면 해요"></textarea>
+      </div>
+    </div>
 
-        const steps = [
-            {
-                title: "1. 개회선언 및 약속 선서 🎤",
-                script: `
-                    <p class="mb-2"><strong>안녕하세요. 이제 나세나반 학급회의를 시작하려고 합니다.</strong></p>
-                    <p class="mb-2">친구들은 바르게 앉아 주시기 바랍니다.</p>
-                    <p class="mb-4 text-kidsecondary font-bold">지금부터 <span class="month-display"></span>월 나세나반 학급회의를 시작합니다.</p>
-                    <p class="mb-2">먼저 나세나반 약속을 함께 읽겠습니다.<br>한 문장씩 제가 읽으면, 여러분은 따라 읽어 주십시오.</p>
-                    <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-200 mt-4 text-gray-700 font-medium text-lg">
-                        <p class="mb-1">🖐️ 첫째, 나의 마음과 생각을 깊이 들여다보겠습니다.</p>
-                        <p class="mb-1">🖐️ 둘째, 세상을 따뜻한 눈으로 바라보겠습니다.</p>
-                        <p class="mb-1">🖐️ 셋째, 내가 나눌 수 있는 것을 생각하고 나눔을 실천하겠습니다.</p>
-                    </div>
-                `,
-                inputHtml: `
-                    <div class="mt-6">
-                        <label class="block text-xl font-bold mb-3 text-gray-700">이번 달은 몇 월인가요?</label>
-                        <div class="flex items-center space-x-3">
-                            <input type="number" id="input-month" min="1" max="12" value="${meetingData.month}" class="w-24 p-3 border-2 border-kidsecondary rounded-xl text-center text-xl font-bold focus:outline-none focus:ring-4 focus:ring-blue-100" onchange="updateMonth(this.value)">
-                            <span class="text-xl font-bold">월</span>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "2. 거울(돌아보기) 회의 🪞",
-                script: `
-                    <p class="mb-2">다음은 거울(돌아보기) 회의 시간입니다.<br>거울 회의는 좋았던 점, 아쉬웠던 점, 바라는 점을 이야기하는 시간입니다.</p>
-                    <p class="mb-2">먼저 자치팀별로 모여 이야기를 나누겠습니다.<br>좋았던 점, 아쉬웠던 점, 바라는 점을 차례대로 이야기해 주세요.<br>친구의 말을 끊지 않고 끝까지 잘 들어주면 좋겠습니다. <span class="text-gray-500 text-sm">(잠시 회의 시간)</span></p>
-                    <p class="mb-2 mt-4 text-blue-600 font-bold">이제 자치팀별 발표를 시작하겠습니다.<br>00팀 발표자 학생부터 차례대로 일어나 발표해 주세요.</p>
-                    <p class="mb-2 mt-4">발표한 학생들에게 박수를 쳐줍시다. 👏<br>친구들의 의견을 잘 들으며 우리 반을 더 좋은 반으로 만들어 가면 좋겠습니다.</p>
-                `,
-                inputHtml: `
-                    <div class="mt-6 space-y-4">
-                        <div>
-                            <label class="block text-lg font-bold mb-2 text-green-600">🥰 좋았던 점</label>
-                            <textarea id="input-ref-good" rows="2" placeholder="우리 반의 좋았던 점을 적어주세요." class="w-full p-3 border-2 border-green-200 rounded-xl focus:outline-none focus:border-green-400" onchange="meetingData.reflection.good = this.value">${meetingData.reflection.good}</textarea>
-                        </div>
-                        <div>
-                            <label class="block text-lg font-bold mb-2 text-orange-500">🥲 아쉬웠던 점</label>
-                            <textarea id="input-ref-bad" rows="2" placeholder="조금 아쉬웠거나 고쳐야 할 점을 적어주세요." class="w-full p-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:border-orange-400" onchange="meetingData.reflection.bad = this.value">${meetingData.reflection.bad}</textarea>
-                        </div>
-                        <div>
-                            <label class="block text-lg font-bold mb-2 text-blue-500">🙏 바라는 점</label>
-                            <textarea id="input-ref-wish" rows="2" placeholder="앞으로 이렇게 되면 좋겠다는 점을 적어주세요." class="w-full p-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:border-blue-400" onchange="meetingData.reflection.wish = this.value">${meetingData.reflection.wish}</textarea>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "3. 다음 달 목표 정하기 🎯",
-                script: `
-                    <p class="mb-2">다음은 다음 달 목표를 정하는 시간입니다.<br>우리 반이 다음 달에 함께 실천하면 좋을 목표를 생각해 봅시다. <span class="text-gray-500 text-sm">(잠시 생각할 시간)</span></p>
-                    <p class="mb-2 mt-4 text-blue-600 font-bold">의견이 있는 친구는 손을 들고 발표해 주세요.</p>
-                    <p class="mb-2 mt-4">여러 친구들의 의견을 들었습니다.<br>이제 나온 의견을 바탕으로 우리 반의 다음 달 목표를 정하겠습니다. <span class="text-gray-500 text-sm">(투표 진행)</span></p>
-                    <p class="mb-2 mt-4 text-green-600 font-bold">정해진 목표를 다시 한번 함께 말해 보겠습니다.</p>
-                    <p>우리 모두 다음 달 목표를 기억하고 함께 실천해 보면 좋겠습니다.</p>
-                `,
-                inputHtml: `
-                    <div class="mt-6">
-                        <label class="block text-xl font-bold mb-3 text-gray-700">🌟 우리 반 다음 달 목표</label>
-                        <textarea id="input-goal" rows="3" placeholder="투표로 정해진 다음 달 목표를 적어주세요!" class="w-full p-4 border-2 border-kidsecondary rounded-xl text-lg focus:outline-none focus:ring-4 focus:ring-blue-100" onchange="meetingData.goal = this.value">${meetingData.goal}</textarea>
-                    </div>
-                `
-            },
-            {
-                title: "4. 제안하기 💡",
-                script: `
-                    <p class="mb-2">다음은 제안하기 시간입니다.<br>우리 반을 더 나은 반으로 만들기 위한 생각이 있으면 발표해 주세요. <span class="text-gray-500 text-sm">(잠시 생각할 시간)</span></p>
-                    <p class="mb-2 text-blue-600 font-bold">제안할 때에는 제안하는 이유도 함께 말해 주면 더 좋습니다.<br>여러분은 발표자의 말을 잘 들어 주세요.</p>
-                    <p class="mb-2 mt-4">좋은 의견을 내 준 학생들에게 박수 부탁드립니다. 👏<br>오늘 나온 제안은 함께 생각해 보고 실천할 수 있도록 하겠습니다.</p>
-                `,
-                inputHtml: `
-                    <div class="mt-6">
-                        <label class="block text-xl font-bold mb-3 text-gray-700">📝 제안 내용 및 이유</label>
-                        <textarea id="input-proposal" rows="4" placeholder="친구들이 제안한 내용과 그 이유를 자세히 적어주세요." class="w-full p-4 border-2 border-purple-200 rounded-xl text-lg focus:outline-none focus:ring-4 focus:ring-purple-100" onchange="meetingData.proposal = this.value">${meetingData.proposal}</textarea>
-                    </div>
-                `
-            },
-            {
-                title: "5. 선생님 말씀 👨‍🏫",
-                script: `
-                    <p class="mb-2 text-lg">다음은 담임 선생님 말씀을 듣겠습니다.</p>
-                    <p class="text-xl font-bold text-kidprimary">"선생님, 말씀 부탁드립니다!"</p>
-                `,
-                inputHtml: `
-                    <div class="mt-6">
-                        <label class="block text-xl font-bold mb-3 text-gray-700">💬 선생님 말씀 요약</label>
-                        <textarea id="input-teacher" rows="4" placeholder="선생님이 해주신 좋은 말씀을 요약해서 적어주세요." class="w-full p-4 border-2 border-yellow-300 rounded-xl text-lg focus:outline-none focus:ring-4 focus:ring-yellow-100" onchange="meetingData.teacherMsg = this.value">${meetingData.teacherMsg}</textarea>
-                    </div>
-                `
-            },
-            {
-                title: "6. 폐회 선언 🏁",
-                script: `
-                    <p class="mb-2">이제 모든 순서를 마쳤습니다.<br>끝까지 바르게 참여해 준 친구들 감사합니다.</p>
-                    <p class="text-xl font-bold text-kidsecondary mt-4">이상으로 <span class="month-display"></span>월 나세나반 학급회의를 마치겠습니다.</p>
-                    <p class="text-lg font-bold mt-2">감사합니다! 🙇‍♂️🙇‍♀️</p>
-                `,
-                inputHtml: `
-                    <div class="mt-8 bg-gray-50 p-6 rounded-2xl border border-gray-200">
-                        <h3 class="font-display text-2xl text-center mb-4 text-gray-800">📋 회의 결과 내보내기</h3>
-                        <p class="text-center text-gray-600 mb-6">수고하셨습니다! 기록한 내용을 저장하거나 복사하세요.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <button onclick="copyResult()" class="flex flex-col items-center justify-center p-4 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-100 hover:border-gray-400 transition-colors">
-                                <span class="text-3xl mb-2">📋</span>
-                                <span class="font-bold">클립보드 복사</span>
-                            </button>
-                            <button onclick="downloadTxt()" class="flex flex-col items-center justify-center p-4 bg-white border-2 border-blue-300 rounded-xl hover:bg-blue-50 hover:border-blue-400 transition-colors">
-                                <span class="text-3xl mb-2">📄</span>
-                                <span class="font-bold">TXT 다운로드</span>
-                            </button>
-                            <button onclick="downloadJson()" class="flex flex-col items-center justify-center p-4 bg-white border-2 border-green-300 rounded-xl hover:bg-green-50 hover:border-green-400 transition-colors">
-                                <span class="text-3xl mb-2">💻</span>
-                                <span class="font-bold">JSON 다운로드</span>
-                            </button>
-                        </div>
-                    </div>
-                `
-            }
-        ];
+    <div class="record-title" style="margin-top:4px">📋 추가 메모 <span class="record-title-badge" style="background:#4ECDC4">선택</span></div>
+    <textarea class="record-textarea" id="mirror-extra" rows="3" placeholder="발표 중 특별히 기억할 내용이나 인상 깊은 의견을 적어요"></textarea>
+  </div>
 
-        let currentStepIndex = 0;
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="prevStep()">← 이전</button>
+    <button class="btn-next" style="background:#4ECDC4;border-color:#4ECDC4;box-shadow:0 4px 16px rgba(78,205,196,0.35)" onclick="nextStep()">
+      다음 순서로 → <span>목표 정하기</span>
+    </button>
+  </div>
+</section>
 
-        function updateMonth(val) {
-            meetingData.month = val;
-            renderDisplayMonth();
-        }
 
-        function renderDisplayMonth() {
-            const displays = document.querySelectorAll('.month-display');
-            displays.forEach(el => el.textContent = meetingData.month);
-        }
+<!-- ══════════════════════════════════
+     STEP 3: 다음 달 목표 정하기
+══════════════════════════════════ -->
+<section class="step-card" id="step-2" style="--step-color:#9B59B6">
+  <div class="step-header">
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#9B59B6,#8e44ad)">🎯</div>
+    <div class="step-title-wrap">
+      <div class="step-num" style="color:#9B59B6">STEP 3</div>
+      <div class="step-title" style="color:#9B59B6">다음 달 목표 정하기</div>
+    </div>
+  </div>
 
-        function renderDots() {
-            const dotsContainer = document.getElementById('progress-dots');
-            let dotsHtml = '';
-            for (let i = 0; i < steps.length; i++) {
-                if (i === currentStepIndex) {
-                    dotsHtml += `<div class="w-8 h-3 rounded-full bg-kidprimary transition-all duration-300"></div>`;
-                } else if (i < currentStepIndex) {
-                    dotsHtml += `<div class="w-3 h-3 rounded-full bg-kidprimary opacity-50 transition-all duration-300"></div>`;
-                } else {
-                    dotsHtml += `<div class="w-3 h-3 rounded-full bg-gray-200 transition-all duration-300"></div>`;
-                }
-            }
-            dotsContainer.innerHTML = dotsHtml;
-        }
+  <div class="scenario-box" style="border-left-color:#9B59B6">
+    <div class="scenario-box-title" style="color:#9B59B6">📜 사회자 대본</div>
+    <div class="scenario-text">다음은 다음 달 목표를 정하는 시간입니다.
+우리 반이 다음 달에 함께 실천하면 좋을 목표를 생각해 봅시다. <span class="cue">（잠시 생각할 시간）</span>
 
-        function renderStep() {
-            const step = steps[currentStepIndex];
-            const contentDiv = document.getElementById('step-content');
-            
-            // 컨텐츠 생성
-            contentDiv.innerHTML = `
-                <h2 class="font-display text-2xl md:text-3xl text-gray-800 mb-6">${step.title}</h2>
-                <div class="bg-blue-50/50 border-l-4 border-kidsecondary p-5 rounded-r-2xl mb-6 text-lg md:text-xl leading-relaxed text-gray-700 shadow-sm">
-                    ${step.script}
-                </div>
-                <div>
-                    ${step.inputHtml}
-                </div>
-            `;
+의견이 있는 친구는 손을 들고 발표해 주세요. <span class="cue">（발표자 발표 후）</span>
 
-            // 애니메이션 재적용을 위한 트릭
-            contentDiv.classList.remove('fade-in');
-            void contentDiv.offsetWidth; 
-            contentDiv.classList.add('fade-in');
+여러 친구들의 의견을 들었습니다.
+이제 나온 의견을 바탕으로 우리 반의 다음 달 목표를 정하겠습니다. <span class="cue">（투표 진행）</span>
 
-            // 버튼 표시 제어
-            document.getElementById('btn-prev').style.display = currentStepIndex > 0 ? 'block' : 'none';
-            
-            if (currentStepIndex === steps.length - 1) {
-                document.getElementById('btn-next').style.display = 'none';
-                document.getElementById('btn-finish').style.display = 'block';
-            } else {
-                document.getElementById('btn-next').style.display = 'block';
-                document.getElementById('btn-finish').style.display = 'none';
-            }
+정해진 목표를 다시 한번 함께 말해 보겠습니다. <span class="cue">（정한 목표 함께 읽기）</span>
+우리 모두 다음 달 목표를 기억하고 함께 실천해 보면 좋겠습니다.</div>
+  </div>
 
-            renderDots();
-            renderDisplayMonth();
+  <div class="record-section">
+    <div class="record-title">💬 나온 의견 목록 <span class="record-title-badge" style="background:#9B59B6">기록</span></div>
+    <div class="suggestion-list" id="goalOpinionList"></div>
+    <button class="btn-add" style="--step-color:#9B59B6; margin-bottom:20px" onclick="addGoalOpinion()">＋ 의견 추가하기</button>
 
-            // 상단으로 부드럽게 스크롤
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+    <hr class="divider">
 
-        function nextStep() {
-            // 현재 단계의 input 값들을 data 객체에 업데이트 (onchange 외의 안전장치)
-            saveCurrentInputs();
-            if (currentStepIndex < steps.length - 1) {
-                currentStepIndex++;
-                renderStep();
-            }
-        }
+    <div class="record-title">🏆 최종 결정된 목표 <span class="record-title-badge" style="background:#9B59B6">필수</span></div>
+    <div class="info-pill">✅ 투표 결과로 정해진 목표를 적어요</div>
+    <input type="text" class="record-textarea" id="finalGoal" placeholder="예) 쉬는 시간에 복도에서 뛰지 않기" style="display:block; height:auto; padding:13px 16px" oninput="updateGoalDisplay()">
+    <div class="goal-display" id="goalDisplay">
+      <div class="goal-display-label">📌 이달의 우리 반 목표</div>
+      <div class="goal-display-text" id="goalDisplayText"></div>
+    </div>
+  </div>
 
-        function prevStep() {
-            saveCurrentInputs();
-            if (currentStepIndex > 0) {
-                currentStepIndex--;
-                renderStep();
-            }
-        }
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="prevStep()">← 이전</button>
+    <button class="btn-next" style="background:#9B59B6;border-color:#9B59B6;box-shadow:0 4px 16px rgba(155,89,182,0.35)" onclick="nextStep()">
+      다음 순서로 → <span>제안하기</span>
+    </button>
+  </div>
+</section>
 
-        function saveCurrentInputs() {
-            if(document.getElementById('input-month')) meetingData.month = document.getElementById('input-month').value;
-            if(document.getElementById('input-ref-good')) meetingData.reflection.good = document.getElementById('input-ref-good').value;
-            if(document.getElementById('input-ref-bad')) meetingData.reflection.bad = document.getElementById('input-ref-bad').value;
-            if(document.getElementById('input-ref-wish')) meetingData.reflection.wish = document.getElementById('input-ref-wish').value;
-            if(document.getElementById('input-goal')) meetingData.goal = document.getElementById('input-goal').value;
-            if(document.getElementById('input-proposal')) meetingData.proposal = document.getElementById('input-proposal').value;
-            if(document.getElementById('input-teacher')) meetingData.teacherMsg = document.getElementById('input-teacher').value;
-        }
 
-        function finishMeeting() {
-            alert("수고하셨습니다! 학급 회의가 성공적으로 기록되었습니다. 결과를 내보내서 공유해보세요!");
-        }
+<!-- ══════════════════════════════════
+     STEP 4: 제안하기
+══════════════════════════════════ -->
+<section class="step-card" id="step-3" style="--step-color:#E8A020">
+  <div class="step-header">
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#F9CA24,#e8a020)">💡</div>
+    <div class="step-title-wrap">
+      <div class="step-num" style="color:#E8A020">STEP 4</div>
+      <div class="step-title" style="color:#E8A020">제안하기</div>
+    </div>
+  </div>
 
-        // --- 내보내기 기능 ---
-        function generateReportText() {
-            return `[나세나반 ${meetingData.month}월 학급회의 결과]
-일시: ${meetingData.date}
+  <div class="scenario-box" style="border-left-color:#E8A020">
+    <div class="scenario-box-title" style="color:#E8A020">📜 사회자 대본</div>
+    <div class="scenario-text">다음은 제안하기 시간입니다.
+우리 반을 더 나은 반으로 만들기 위한 생각이 있으면 발표해 주세요. <span class="cue">（잠시 생각할 시간）</span>
 
-1. 거울(돌아보기) 회의
-- 좋았던 점: ${meetingData.reflection.good || '없음'}
-- 아쉬웠던 점: ${meetingData.reflection.bad || '없음'}
-- 바라는 점: ${meetingData.reflection.wish || '없음'}
+제안할 때에는 제안하는 이유도 함께 말해 주면 더 좋습니다.
+여러분은 발표자의 말을 잘 들어 주세요. <span class="cue">（발표 후）</span>
 
-2. 다음 달 목표
-- ${meetingData.goal || '없음'}
+좋은 의견을 내 준 학생들에게 박수 부탁드립니다. 👏
+오늘 나온 제안은 함께 생각해 보고 실천할 수 있도록 하겠습니다.</div>
+  </div>
 
-3. 제안 내용
-- ${meetingData.proposal || '없음'}
+  <div class="record-section">
+    <div class="record-title">📌 제안 내용 기록 <span class="record-title-badge" style="background:#E8A020">기록</span></div>
+    <div class="tip-box" style="border-color:#F9CA24;background:rgba(249,202,36,0.12);color:#7a5e00">
+      <span>💡</span>
+      <span>제안 내용과 이유를 함께 적어요. 여러 친구의 의견을 모두 기록할 수 있어요!</span>
+    </div>
 
-4. 선생님 말씀
-- ${meetingData.teacherMsg || '없음'}
-`;
-        }
+    <div style="display:grid;grid-template-columns:auto 1fr auto;gap:0;align-items:center;margin-bottom:6px;padding:0 4px">
+      <div style="font-size:0.75rem;font-weight:700;color:#aaa;width:38px;text-align:center">번호</div>
+      <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:8px">
+        <div style="font-size:0.75rem;font-weight:700;color:#aaa;padding-left:4px">제안 내용</div>
+        <div style="font-size:0.75rem;font-weight:700;color:#aaa;padding-left:4px">이유</div>
+      </div>
+      <div style="width:34px"></div>
+    </div>
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.remove('opacity-0');
-            setTimeout(() => {
-                toast.classList.add('opacity-0');
-            }, 2000);
-        }
+    <div class="suggestion-list" id="suggestionList"></div>
+    <button class="btn-add" style="--step-color:#E8A020; border-color:#E8A020; color:#E8A020; margin-bottom:16px" onclick="addSuggestion()">＋ 제안 추가하기</button>
+  </div>
 
-        function copyResult() {
-            const text = generateReportText();
-            // iframe 환경 등에서 clipboard API가 안될 수 있으므로 execCommand 폴백 사용
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                showToast("회의록이 클립보드에 복사되었습니다!");
-            } catch (err) {
-                alert('복사에 실패했습니다.');
-            }
-            document.body.removeChild(textArea);
-        }
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="prevStep()">← 이전</button>
+    <button class="btn-next" style="background:#E8A020;border-color:#E8A020;box-shadow:0 4px 16px rgba(232,160,32,0.35)" onclick="nextStep()">
+      다음 순서로 → <span>선생님 말씀</span>
+    </button>
+  </div>
+</section>
 
-        function downloadTxt() {
-            const text = generateReportText();
-            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `나세나반_${meetingData.month}월_학급회의록.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showToast("TXT 파일이 다운로드 되었습니다!");
-        }
 
-        function downloadJson() {
-            const jsonStr = JSON.stringify(meetingData, null, 2);
-            const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `나세나반_${meetingData.month}월_데이터.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showToast("JSON 파일이 다운로드 되었습니다!");
-        }
+<!-- ══════════════════════════════════
+     STEP 5: 선생님 말씀
+══════════════════════════════════ -->
+<section class="step-card" id="step-4" style="--step-color:#9B59B6">
+  <div class="step-header">
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#9B59B6,#7d3c98)">👩‍🏫</div>
+    <div class="step-title-wrap">
+      <div class="step-num" style="color:#9B59B6">STEP 5</div>
+      <div class="step-title" style="color:#9B59B6">선생님 말씀</div>
+    </div>
+  </div>
 
-        // 초기 화면 렌더링
-        window.onload = () => {
-            renderStep();
-        };
+  <div class="scenario-box" style="border-left-color:#9B59B6">
+    <div class="scenario-box-title" style="color:#9B59B6">📜 사회자 대본</div>
+    <div class="scenario-text">다음은 담임 선생님 말씀을 듣겠습니다.
+선생님, 말씀 부탁드립니다. 🙏</div>
+  </div>
 
-    </script>
+  <div class="teacher-box">
+    <span class="teacher-emoji">👩‍🏫</span>
+    <div class="teacher-prompt">선생님 말씀을 바른 자세로 귀 기울여 들어요! 👂</div>
+    <div class="record-title" style="justify-content:center; margin-bottom:12px">📝 선생님 말씀 요약 <span class="record-title-badge" style="background:#9B59B6">기록</span></div>
+    <textarea class="record-textarea" id="teacher-note" rows="4" placeholder="선생님 말씀 중 중요한 내용을 정리해요&#10;예) 다음 주 현장 체험학습 준비물 안내, 급식 예절 지키기 강조"></textarea>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="prevStep()">← 이전</button>
+    <button class="btn-next" style="background:#9B59B6;border-color:#9B59B6;box-shadow:0 4px 16px rgba(155,89,182,0.35)" onclick="nextStep()">
+      마지막 순서로 → <span>폐회 선언</span>
+    </button>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     STEP 6: 폐회 선언 & 내보내기
+══════════════════════════════════ -->
+<section class="step-card" id="step-5" style="--step-color:#2ECC71">
+  <div class="step-header">
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#2ECC71,#27ae60)">🏁</div>
+    <div class="step-title-wrap">
+      <div class="step-num" style="color:#2ECC71">STEP 6</div>
+      <div class="step-title" style="color:#2ECC71">폐회 선언</div>
+    </div>
+  </div>
+
+  <div class="close-card">
+    <div class="close-title">수고했어요! 🎉</div>
+    <div class="close-sub">끝까지 바르게 참여해 준 친구들 감사합니다.</div>
+    <div style="font-size:0.9rem;color:rgba(255,255,255,0.6);line-height:1.7" id="closingScript">
+      이상으로 <strong id="c-month" style="color:#F9CA24">0</strong>월 우리반 학급회의를 마치겠습니다. 감사합니다.
+    </div>
+  </div>
+
+  <!-- 회의 결과 내보내기 -->
+  <div class="export-section">
+    <div class="export-title">📤 회의 결과 내보내기</div>
+    <div class="export-desc">지금까지 기록한 회의 내용을 저장하거나 복사할 수 있어요.</div>
+    <div class="export-preview" id="exportPreview"></div>
+    <div class="export-buttons">
+      <button class="btn-export clipboard" onclick="copyClipboard()">📋 클립보드 복사</button>
+      <button class="btn-export txt" onclick="downloadTxt()">📄 TXT 다운로드</button>
+      <button class="btn-export json" onclick="downloadJson()">🗂️ JSON 다운로드</button>
+    </div>
+  </div>
+
+  <!-- JSON 불러오기 -->
+  <div class="import-section">
+    <div class="import-title">📂 이전 회의 기록 불러오기</div>
+    <div class="import-desc">저장해 둔 JSON 파일을 열어서 이전 회의 내용을 복원해요.</div>
+    <label class="btn-import" for="jsonFileInput" title="JSON 파일 불러오기">
+      <span class="import-icon">📂</span>
+      <span class="import-label">JSON 파일 열기</span>
+    </label>
+    <input type="file" id="jsonFileInput" accept=".json" style="display:none" onchange="loadJsonFile(event)">
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="prevStep()">← 이전</button>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <a href="https://litt.ly/chichiboo" target="_blank" rel="noopener">
+    🎭 Created by. 교육뮤지컬 꿈꾸는 치수쌤
+  </a>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ──────────────────────────────────────────
+  // STATE
+  // ──────────────────────────────────────────
+  const STEPS = 6;
+  let currentStep = 0;
+
+  const STEP_COLORS = ['#FF6B35','#4ECDC4','#9B59B6','#E8A020','#9B59B6','#2ECC71'];
+
+  // Dynamic lists
+  let goalOpinions = [];   // [{text}]
+  let suggestions  = [];   // [{content, reason}]
+
+  // ──────────────────────────────────────────
+  // INIT
+  // ──────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    addGoalOpinion();
+    addGoalOpinion();
+    addSuggestion();
+    addSuggestion();
+    syncMonth();
+  });
+
+  // Month sync
+  document.getElementById('monthInput').addEventListener('input', syncMonth);
+  function syncMonth() {
+    const v = document.getElementById('monthInput').value || '0';
+    document.querySelectorAll('#s1-month, #c-month').forEach(el => el.textContent = v);
+  }
+
+  // ──────────────────────────────────────────
+  // NAVIGATION
+  // ──────────────────────────────────────────
+  function goToStep(idx) {
+    if (idx < 0 || idx >= STEPS) return;
+    document.getElementById('step-' + currentStep).classList.remove('active');
+    document.getElementById('nav-' + currentStep).classList.remove('active');
+
+    // mark done
+    if (idx > currentStep) {
+      document.getElementById('nav-' + currentStep).classList.add('done');
+    }
+
+    currentStep = idx;
+    document.getElementById('step-' + currentStep).classList.add('active');
+
+    const navBtn = document.getElementById('nav-' + currentStep);
+    navBtn.classList.remove('done');
+    navBtn.classList.add('active');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (currentStep === 5) buildExportPreview();
+  }
+
+  function nextStep() { if (currentStep < STEPS - 1) goToStep(currentStep + 1); }
+  function prevStep() { if (currentStep > 0)         goToStep(currentStep - 1); }
+
+  // oath celebration
+  let oathShown = false;
+  document.addEventListener('click', (e) => {
+    if (oathShown) return;
+    if (e.target.closest('.oath-item')) {
+      oathShown = true;
+      const b = document.getElementById('oathBanner');
+      b.style.display = 'block';
+    }
+  });
+
+  // ──────────────────────────────────────────
+  // GOAL OPINIONS (Step 3)
+  // ──────────────────────────────────────────
+  function addGoalOpinion() {
+    const idx = goalOpinions.length;
+    goalOpinions.push({ text: '' });
+    renderGoalOpinions();
+  }
+
+  function removeGoalOpinion(idx) {
+    goalOpinions.splice(idx, 1);
+    renderGoalOpinions();
+  }
+
+  function renderGoalOpinions() {
+    const list = document.getElementById('goalOpinionList');
+    list.innerHTML = '';
+    goalOpinions.forEach((item, i) => {
+      const row = document.createElement('div');
+      row.className = 'suggestion-item';
+      row.innerHTML = `
+        <div class="suggestion-item-num" style="background:#9B59B6">${i + 1}</div>
+        <div class="suggestion-item-fields">
+          <input type="text" placeholder="예) 음악 시간을 늘렸으면 좋겠어요" value="${esc(item.text)}"
+            oninput="goalOpinions[${i}].text = this.value" style="flex:1">
+        </div>
+        <button class="btn-remove" onclick="removeGoalOpinion(${i})" title="삭제">✕</button>`;
+      list.appendChild(row);
+    });
+  }
+
+  function updateGoalDisplay() {
+    const val = document.getElementById('finalGoal').value.trim();
+    const disp = document.getElementById('goalDisplay');
+    const txt  = document.getElementById('goalDisplayText');
+    if (val) {
+      disp.style.display = 'block';
+      txt.textContent = val;
+    } else {
+      disp.style.display = 'none';
+    }
+  }
+
+  // ──────────────────────────────────────────
+  // SUGGESTIONS (Step 4)
+  // ──────────────────────────────────────────
+  function addSuggestion() {
+    const idx = suggestions.length;
+    suggestions.push({ content: '', reason: '' });
+    renderSuggestions();
+  }
+
+  function removeSuggestion(idx) {
+    suggestions.splice(idx, 1);
+    renderSuggestions();
+  }
+
+  function renderSuggestions() {
+    const list = document.getElementById('suggestionList');
+    list.innerHTML = '';
+    suggestions.forEach((item, i) => {
+      const row = document.createElement('div');
+      row.className = 'suggestion-item';
+      row.innerHTML = `
+        <div class="suggestion-item-num" style="background:#E8A020">${i + 1}</div>
+        <div class="suggestion-item-fields">
+          <input type="text" placeholder="제안 내용" value="${esc(item.content)}"
+            oninput="suggestions[${i}].content = this.value">
+          <input type="text" class="reason-input" placeholder="이유" value="${esc(item.reason)}"
+            oninput="suggestions[${i}].reason = this.value">
+        </div>
+        <button class="btn-remove" onclick="removeSuggestion(${i})" title="삭제">✕</button>`;
+      list.appendChild(row);
+    });
+  }
+
+  // ──────────────────────────────────────────
+  // EXPORT
+  // ──────────────────────────────────────────
+  function collectData() {
+    const month = document.getElementById('monthInput').value || '0';
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
+
+    return {
+      title: `우리반 학급회의 기록`,
+      month: month + '월',
+      date: dateStr,
+      step1_개회메모: document.getElementById('record-open').value.trim(),
+      step2_거울회의: {
+        좋았던점: document.getElementById('mirror-good').value.trim(),
+        아쉬웠던점: document.getElementById('mirror-bad').value.trim(),
+        바라는점: document.getElementById('mirror-wish').value.trim(),
+        추가메모: document.getElementById('mirror-extra').value.trim(),
+      },
+      step3_목표정하기: {
+        나온의견: goalOpinions.map(o => o.text).filter(Boolean),
+        최종목표: document.getElementById('finalGoal').value.trim(),
+      },
+      step4_제안하기: suggestions
+        .filter(s => s.content || s.reason)
+        .map((s, i) => ({ 번호: i+1, 제안: s.content, 이유: s.reason })),
+      step5_선생님말씀: document.getElementById('teacher-note').value.trim(),
+    };
+  }
+
+  function buildTxtString(d) {
+    const divider = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
+    const lines = [];
+    lines.push(`🏫 ${d.title}`);
+    lines.push(`📅 ${d.date}  |  ${d.month}`);
+    lines.push(divider);
+
+    lines.push('');
+    lines.push('【 1. 개회 메모 】');
+    lines.push(d.step1_개회메모 || '(기록 없음)');
+
+    lines.push('');
+    lines.push('【 2. 거울(돌아보기) 회의 】');
+    lines.push('😊 좋았던 점:');
+    lines.push(d.step2_거울회의.좋았던점 || '  (기록 없음)');
+    lines.push('😢 아쉬웠던 점:');
+    lines.push(d.step2_거울회의.아쉬웠던점 || '  (기록 없음)');
+    lines.push('🌟 바라는 점:');
+    lines.push(d.step2_거울회의.바라는점 || '  (기록 없음)');
+    if (d.step2_거울회의.추가메모) {
+      lines.push('📋 추가 메모:');
+      lines.push(d.step2_거울회의.추가메모);
+    }
+
+    lines.push('');
+    lines.push('【 3. 다음 달 목표 정하기 】');
+    lines.push('💬 나온 의견:');
+    if (d.step3_목표정하기.나온의견.length) {
+      d.step3_목표정하기.나온의견.forEach((o, i) => lines.push(`  ${i+1}. ${o}`));
+    } else { lines.push('  (기록 없음)'); }
+    lines.push(`🏆 최종 목표: ${d.step3_목표정하기.최종목표 || '(미정)'}`);
+
+    lines.push('');
+    lines.push('【 4. 제안하기 】');
+    if (d.step4_제안하기.length) {
+      d.step4_제안하기.forEach(s => lines.push(`  ${s.번호}. ${s.제안}${s.이유 ? ' → 이유: ' + s.이유 : ''}`));
+    } else { lines.push('  (기록 없음)'); }
+
+    lines.push('');
+    lines.push('【 5. 선생님 말씀 】');
+    lines.push(d.step5_선생님말씀 || '(기록 없음)');
+
+    lines.push('');
+    lines.push(divider);
+    lines.push('Created by. 교육뮤지컬 꿈꾸는 치수쌤 | litt.ly/chichiboo');
+
+    return lines.join('\n');
+  }
+
+  function buildExportPreview() {
+    const d = collectData();
+    document.getElementById('exportPreview').textContent = buildTxtString(d);
+  }
+
+  function copyClipboard() {
+    const d = collectData();
+    const txt = buildTxtString(d);
+    navigator.clipboard.writeText(txt).then(() => showToast('📋 클립보드에 복사했어요!')).catch(() => {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = txt;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('📋 클립보드에 복사했어요!');
+    });
+  }
+
+  function downloadTxt() {
+    const d = collectData();
+    const txt = buildTxtString(d);
+    const month = document.getElementById('monthInput').value || '0';
+    download(`우리반_학급회의_${month}월.txt`, txt, 'text/plain;charset=utf-8');
+    showToast('📄 TXT 파일을 저장했어요!');
+  }
+
+  function downloadJson() {
+    const d = collectData();
+    const month = document.getElementById('monthInput').value || '0';
+    download(`우리반_학급회의_${month}월.json`, JSON.stringify(d, null, 2), 'application/json');
+    showToast('🗂️ JSON 파일을 저장했어요!');
+  }
+
+  function download(filename, content, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ──────────────────────────────────────────
+  // JSON RESTORE
+  // ──────────────────────────────────────────
+  function loadJsonFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const d = JSON.parse(e.target.result);
+        restoreFromData(d);
+        showToast('✅ 회의 기록을 성공적으로 불러왔어요!');
+        // reset file input so same file can be re-loaded
+        event.target.value = '';
+      } catch (err) {
+        showToast('⚠️ 파일을 읽을 수 없어요. JSON 파일인지 확인해 주세요.');
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  function restoreFromData(d) {
+    // month
+    if (d.month) {
+      const m = parseInt(d.month);
+      if (!isNaN(m)) {
+        document.getElementById('monthInput').value = m;
+        syncMonth();
+      }
+    }
+    // step1
+    if (d.step1_개회메모 !== undefined)
+      document.getElementById('record-open').value = d.step1_개회메모;
+    // step2
+    if (d.step2_거울회의) {
+      const m = d.step2_거울회의;
+      if (m.좋았던점  !== undefined) document.getElementById('mirror-good').value  = m.좋았던점;
+      if (m.아쉬웠던점 !== undefined) document.getElementById('mirror-bad').value   = m.아쉬웠던점;
+      if (m.바라는점  !== undefined) document.getElementById('mirror-wish').value  = m.바라는점;
+      if (m.추가메모  !== undefined) document.getElementById('mirror-extra').value = m.추가메모;
+    }
+    // step3
+    if (d.step3_목표정하기) {
+      const g = d.step3_목표정하기;
+      goalOpinions = [];
+      if (Array.isArray(g.나온의견) && g.나온의견.length) {
+        g.나온의견.forEach(t => goalOpinions.push({ text: t }));
+      } else {
+        goalOpinions.push({ text: '' }, { text: '' });
+      }
+      renderGoalOpinions();
+      if (g.최종목표 !== undefined) {
+        document.getElementById('finalGoal').value = g.최종목표;
+        updateGoalDisplay();
+      }
+    }
+    // step4
+    if (Array.isArray(d.step4_제안하기)) {
+      suggestions = [];
+      if (d.step4_제안하기.length) {
+        d.step4_제안하기.forEach(s => suggestions.push({ content: s.제안 || '', reason: s.이유 || '' }));
+      } else {
+        suggestions.push({ content: '', reason: '' }, { content: '', reason: '' });
+      }
+      renderSuggestions();
+    }
+    // step5
+    if (d.step5_선생님말씀 !== undefined)
+      document.getElementById('teacher-note').value = d.step5_선생님말씀;
+
+    // go to step 1 and rebuild preview if on step 6
+    if (currentStep === 5) buildExportPreview();
+  }
+
+  // ──────────────────────────────────────────
+  // UTILS
+  // ──────────────────────────────────────────
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  function esc(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
 </body>
-</html><script>function showAlert(){
-  const box = document.createElement('div');
-  box.textContent = '버튼이 클릭되었습니다! ' + new Date().toLocaleTimeString();
-  box.style.cssText = 'margin-top:20px;padding:12px;border:1px solid #93c5fd;background:#dbeafe;border-radius:10px;color:#1e40af';
-  document.body.appendChild(box);
-}
-console.log('콘솔 테스트: 정상 동작');</script></body></html>
+</html>
