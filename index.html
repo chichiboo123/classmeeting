@@ -185,18 +185,20 @@
     color: #999;
     transition: all 0.2s;
   }
-  .progress-btn.active .progress-num,
   .progress-btn.done .progress-num {
     background: var(--step-color, var(--orange));
     color: white;
   }
-  .progress-btn.done .progress-num::after { content: '✓'; font-size: 0.85rem; }
   .progress-label {
     font-size: 0.68rem;
     font-weight: 700;
     color: #aaa;
     white-space: nowrap;
     transition: color 0.2s;
+  }
+  .progress-btn.active .progress-num {
+    background: var(--step-color, var(--orange));
+    color: white;
   }
   .progress-btn.active .progress-label { color: var(--step-color, var(--orange)); }
   .progress-btn.done .progress-label { color: var(--step-color, var(--orange)); opacity: 0.6; }
@@ -873,7 +875,8 @@
   body.presentation-mode .tip-box,
   body.presentation-mode .info-pill,
   body.presentation-mode .step-header,
-  body.presentation-mode .scenario-box { display: none !important; }
+  body.presentation-mode .scenario-box,
+  body.presentation-mode .teacher-box { display: none !important; }
   body.presentation-mode .nav-buttons { justify-content: center; margin-top: 20px; }
   body.presentation-mode .btn-prev,
   body.presentation-mode .btn-next { font-size: 1.1rem; padding: 14px 34px; }
@@ -945,13 +948,44 @@
   }
   .pres-slide-point-icon .material-icons { font-size: 1.1rem; color: #fff; }
 
+  /* sub-slide paging within a step */
+  .pres-slides-container { display: none; }
+  body.presentation-mode .pres-slides-container { display: block; }
+  body.presentation-mode .pres-slides-container .pres-slide { display: none; }
+  body.presentation-mode .pres-slides-container .pres-slide.active { display: flex; }
+  .pres-subnav { display: flex; gap: 10px; justify-content: center; margin-top: 18px; }
+  .pres-subnav-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 20px; border-radius: 30px; border: 2px solid var(--step-color, var(--orange));
+    background: none; color: var(--step-color, var(--orange));
+    font-size: 0.88rem; font-weight: 700; cursor: pointer;
+    transition: all 0.2s; font-family: 'Pretendard GOV', sans-serif;
+  }
+  .pres-subnav-btn:hover { background: color-mix(in srgb, var(--step-color, var(--orange)) 10%, transparent); }
+
+  /* oath in slide */
+  .pres-oath-list { display: flex; flex-direction: column; gap: 12px; max-width: 560px; width: 100%; margin: 0 auto; }
+  .pres-oath-item {
+    display: flex; align-items: center; gap: 14px;
+    background: color-mix(in srgb, var(--step-color, var(--orange)) 7%, white);
+    border: 2px solid color-mix(in srgb, var(--step-color, var(--orange)) 22%, transparent);
+    border-radius: 14px; padding: 14px 20px;
+    font-size: 1rem; font-weight: 700; color: var(--text);
+  }
+  .pres-oath-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 0.82rem; color: white; flex-shrink: 0;
+  }
+
   @media (max-width: 900px) {
     .header-inner { gap: 10px; }
     .header-controls { gap: 8px; }
   }
   @media (max-width: 600px) {
     .header-inner { padding: 10px 14px; gap: 8px; }
-    .header-title { font-size: 1.15rem; }
+    .header-titles { min-width: 0; overflow: hidden; }
+    .header-title { font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .header-subtitle { font-size: 0.72rem; }
     main { padding: 18px 12px 24px; }
     .nav-buttons { gap: 8px; }
@@ -960,6 +994,19 @@
     .help-modal-content { padding: 16px; }
     .pres-slide-title { font-size: 1.9rem; }
     .pres-slide-point { font-size: 0.95rem; padding: 11px 14px; }
+  }
+  @media (max-width: 420px) {
+    .header-emoji { display: none; }
+    .header-inner { gap: 6px; padding: 9px 12px; }
+    .header-title { font-size: 0.95rem; }
+    .header-subtitle { display: none; }
+    .header-controls { gap: 6px; }
+    .month-label { display: none; }
+    .month-input { width: 40px; font-size: 0.95rem; padding: 3px 4px; }
+    .month-suffix { font-size: 0.8rem; }
+    .mode-btn { padding: 3px 7px; font-size: 0.62rem; }
+    .help-btn { width: 28px; height: 28px; }
+    .help-btn .material-icons { font-size: 0.95rem; }
   }
 </style>
 </head>
@@ -1051,16 +1098,35 @@
     </div>
   </div>
 
-  <!-- 발표 슬라이드 -->
-  <div class="pres-slide" style="--step-color:#FF6B35">
-    <div class="pres-slide-badge">STEP 1</div>
-    <div class="pres-slide-icon" style="background:linear-gradient(135deg,#FF6B35,#e8522a)"><span class="material-icons">campaign</span></div>
-    <div class="pres-slide-title">개회선언 &amp; 우리반 약속 선서</div>
-    <ul class="pres-slide-points">
-      <li class="pres-slide-point" style="--step-color:#FF6B35"><span class="pres-slide-point-icon"><span class="material-icons">self_improvement</span></span><span>바르게 앉아 주세요</span></li>
-      <li class="pres-slide-point" style="--step-color:#FF6B35"><span class="pres-slide-point-icon"><span class="material-icons">campaign</span></span><span><strong id="ps1-month">0</strong>월 우리반 학급회의를 시작합니다</span></li>
-      <li class="pres-slide-point" style="--step-color:#FF6B35"><span class="pres-slide-point-icon"><span class="material-icons">handshake</span></span><span>우리반 약속 선서를 함께 읽겠습니다</span></li>
-    </ul>
+  <!-- 발표 슬라이드 (2페이지) -->
+  <div class="pres-slides-container" id="presSlides-0">
+    <!-- 1페이지: 개회선언 -->
+    <div class="pres-slide active" style="--step-color:#FF6B35">
+      <div class="pres-slide-badge">STEP 1 · 1/2</div>
+      <div class="pres-slide-icon" style="background:linear-gradient(135deg,#FF6B35,#e8522a)"><span class="material-icons">campaign</span></div>
+      <div class="pres-slide-title">개회선언</div>
+      <ul class="pres-slide-points">
+        <li class="pres-slide-point" style="--step-color:#FF6B35"><span class="pres-slide-point-icon"><span class="material-icons">self_improvement</span></span><span>바르게 앉아 주세요</span></li>
+        <li class="pres-slide-point" style="--step-color:#FF6B35"><span class="pres-slide-point-icon"><span class="material-icons">campaign</span></span><span><strong id="ps1-month">0</strong>월 우리반 학급회의를 시작합니다</span></li>
+      </ul>
+      <div class="pres-subnav">
+        <button class="pres-subnav-btn" style="--step-color:#FF6B35" onclick="goToSubSlide(0,1)">우리반 약속 선서 →</button>
+      </div>
+    </div>
+    <!-- 2페이지: 우리반 약속 선서 -->
+    <div class="pres-slide" style="--step-color:#FF6B35">
+      <div class="pres-slide-badge">STEP 1 · 2/2</div>
+      <div class="pres-slide-icon" style="background:linear-gradient(135deg,#FF6B35,#e8522a)"><span class="material-icons">handshake</span></div>
+      <div class="pres-slide-title">우리반 약속 선서</div>
+      <ul class="pres-oath-list">
+        <li class="pres-oath-item" style="--step-color:#FF6B35"><span class="pres-oath-num" style="background:#FF6B35">하나</span><span>나의 마음과 생각을 깊이 들여다보겠습니다.</span></li>
+        <li class="pres-oath-item" style="--step-color:#4ECDC4"><span class="pres-oath-num" style="background:#4ECDC4">둘</span><span>세상을 따뜻한 눈으로 바라보겠습니다.</span></li>
+        <li class="pres-oath-item" style="--step-color:#9B59B6"><span class="pres-oath-num" style="background:#9B59B6">셋</span><span>내가 나눌 수 있는 것을 생각하고 나눔을 실천하겠습니다.</span></li>
+      </ul>
+      <div class="pres-subnav">
+        <button class="pres-subnav-btn" style="--step-color:#FF6B35" onclick="goToSubSlide(0,0)">← 개회선언</button>
+      </div>
+    </div>
   </div>
 
   <!-- 시나리오 -->
@@ -1516,6 +1582,14 @@
     });
   }
 
+  function goToSubSlide(stepIdx, slideIdx) {
+    const container = document.getElementById('presSlides-' + stepIdx);
+    if (!container) return;
+    container.querySelectorAll('.pres-slide').forEach((s, i) => {
+      s.classList.toggle('active', i === slideIdx);
+    });
+  }
+
   function openHelpModal() {
     document.getElementById('helpModal').classList.add('open');
   }
@@ -1548,6 +1622,9 @@
     navBtn.classList.add('active');
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // sub-slide 초기화
+    goToSubSlide(currentStep, 0);
 
     if (currentStep === 5) buildExportPreview();
   }
