@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
   :root {
     --orange:  #FF6B35;
@@ -54,7 +55,8 @@
     align-items: center;
     gap: 14px;
   }
-  .header-emoji { font-size: 2rem; }
+  .material-icons { font-family: 'Material Icons'; vertical-align: middle; }
+  .header-emoji .material-icons { font-size: 2rem; color: #fff; }
   .header-titles { flex: 1; }
   .header-title {
     font-family: 'Black Han Sans', sans-serif;
@@ -92,6 +94,46 @@
   }
   .month-input:focus { border-color: var(--yellow); }
   .month-suffix { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .mode-switch {
+    display: inline-flex;
+    border: 2px solid rgba(255,255,255,0.28);
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.08);
+  }
+  .mode-btn {
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.75);
+    padding: 7px 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .mode-btn.active {
+    color: var(--navy);
+    background: #fff;
+  }
+  .help-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .help-btn .material-icons { font-size: 1.1rem; }
 
   /* ── PROGRESS NAV ── */
   .progress-nav {
@@ -223,6 +265,30 @@
     box-shadow: var(--shadow);
     border-left: 5px solid var(--step-color, var(--orange));
   }
+  .script-toggle {
+    width: 100%;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--step-color, var(--orange));
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding: 0;
+  }
+  .script-toggle-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .script-toggle .material-icons { font-size: 1rem; }
+  .script-body { display: none; }
+  .scenario-box.open .script-body { display: block; }
+  .scenario-box.open .script-toggle .expand-icon { transform: rotate(180deg); }
   .scenario-box-title {
     font-size: 0.78rem;
     font-weight: 800;
@@ -622,8 +688,8 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    padding: 18px 28px;
-    border-radius: 20px;
+    padding: 10px 16px;
+    border-radius: 12px;
     background: linear-gradient(135deg, #e8f8f0, #d4f5e4);
     border: 2px solid var(--green);
     color: #1a7a45;
@@ -637,8 +703,8 @@
     box-shadow: 0 6px 20px rgba(46,204,113,0.25);
     background: linear-gradient(135deg, #d4f5e4, #b8eecf);
   }
-  .import-icon { font-size: 2.2rem; line-height: 1; }
-  .import-label { font-size: 0.9rem; font-weight: 800; }
+  .import-icon { font-size: 1.2rem; line-height: 1; }
+  .import-label { font-size: 0.8rem; font-weight: 800; }
 
   /* toast */
   .toast {
@@ -770,6 +836,67 @@
   }
   .goal-display-label { font-size: 0.75rem; opacity: 0.7; margin-bottom: 4px; }
   .goal-display-text  { font-family: 'Black Han Sans', sans-serif; font-size: 1.3rem; letter-spacing: 0.04em; }
+  .title-icon,
+  .step-icon-wrap .material-icons { font-size: 1.55rem; color: #fff; }
+  .record-title .material-icons,
+  .info-pill .material-icons,
+  .scenario-box-title .material-icons { font-size: 1rem; margin-right: 4px; }
+
+  .help-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 16px;
+  }
+  .help-modal.open { display: flex; }
+  .help-modal-content {
+    width: min(560px, 100%);
+    background: #fff;
+    border-radius: 16px;
+    padding: 22px;
+  }
+  .help-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .help-close { border: none; background: #f2f2f2; border-radius: 8px; padding: 6px; cursor: pointer; }
+  .help-list { margin-left: 18px; line-height: 1.7; font-size: 0.92rem; color: #444; }
+  .help-footer { margin-top: 16px; font-size: 0.8rem; color: #777; text-align: center; }
+
+  body.presentation-mode { background: #fff; }
+  body.presentation-mode main { max-width: 1120px; padding-top: 18px; }
+  body.presentation-mode .record-section,
+  body.presentation-mode .export-section,
+  body.presentation-mode .import-section,
+  body.presentation-mode .tip-box,
+  body.presentation-mode .info-pill { display: none; }
+  body.presentation-mode .step-title { font-size: 2.2rem; }
+  body.presentation-mode .scenario-box { padding: 28px; }
+  body.presentation-mode .script-body { display: block !important; }
+  body.presentation-mode .script-toggle { margin-bottom: 16px; font-size: 1rem; }
+  body.presentation-mode .scenario-text { font-size: 1.5rem; line-height: 1.9; }
+  body.presentation-mode .nav-buttons { justify-content: center; }
+  body.presentation-mode .btn-prev,
+  body.presentation-mode .btn-next { font-size: 1.1rem; padding: 14px 30px; }
+
+  @media (max-width: 900px) {
+    .header-inner { flex-wrap: wrap; align-items: flex-start; }
+    .header-controls { width: 100%; justify-content: flex-start; }
+    .month-badge-wrap { order: 1; }
+  }
+  @media (max-width: 600px) {
+    .header-inner { padding: 12px 14px; gap: 10px; }
+    .header-title { font-size: 1.2rem; }
+    .header-subtitle { font-size: 0.75rem; }
+    main { padding: 18px 12px 24px; }
+    .nav-buttons { gap: 8px; }
+    .btn-prev, .btn-next, .btn-export, .btn-import { min-height: 44px; padding: 10px 16px; font-size: 0.86rem; }
+    .suggestion-item-fields { flex-direction: column; }
+    .mode-switch { width: 100%; }
+    .mode-btn { flex: 1; }
+    .help-modal-content { padding: 16px; }
+  }
 </style>
 </head>
 <body>
@@ -777,16 +904,25 @@
 <!-- HEADER -->
 <header>
   <div class="header-inner">
-    <div class="header-emoji">🏫</div>
+    <div class="header-emoji"><span class="material-icons">school</span></div>
     <div class="header-titles">
       <div class="header-title">우리반 학급회의</div>
       <div class="header-subtitle">모두를 위한 학급회의 도우미</div>
     </div>
+    <div class="header-controls">
     <div class="month-badge-wrap">
       <span class="month-label">회의 월</span>
       <input class="month-input" type="number" id="monthInput" min="1" max="12" placeholder="0" value="">
       <span class="month-suffix">월</span>
     </div>
+    <div class="mode-switch" role="tablist" aria-label="모드 전환">
+      <button class="mode-btn active" id="modeRecordBtn" onclick="setMode('record')">기록모드</button>
+      <button class="mode-btn" id="modePresentBtn" onclick="setMode('presentation')">발표모드</button>
+    </div>
+    <button class="help-btn" onclick="openHelpModal()" aria-label="사용법 도움말">
+      <span class="material-icons">help_outline</span>
+    </button>
+  </div>
   </div>
 </header>
 
@@ -844,7 +980,7 @@
 ══════════════════════════════════ -->
 <section class="step-card active" id="step-0" style="--step-color:#FF6B35">
   <div class="step-header">
-    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#FF6B35,#e8522a)">📣</div>
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#FF6B35,#e8522a)"><span class="material-icons">campaign</span></div>
     <div class="step-title-wrap">
       <div class="step-num" style="color:#FF6B35">STEP 1</div>
       <div class="step-title" style="color:#FF6B35">개회선언 &amp; 우리반 약속 선서</div>
@@ -853,7 +989,7 @@
 
   <!-- 시나리오 -->
   <div class="scenario-box">
-    <div class="scenario-box-title">📜 사회자 대본</div>
+    <div class="scenario-box-title"><span class="material-icons">article</span> 사회자 대본</div>
     <div class="scenario-text">안녕하세요. 이제 우리반 학급회의를 시작하려고 합니다.
 친구들은 바르게 앉아 주시기 바랍니다.
 
@@ -865,12 +1001,12 @@
   <!-- 선서 -->
   <div class="record-section">
     <div class="record-title">
-      🤝 우리반 약속 선서
+      <span class="material-icons">handshake</span> 우리반 약속 선서
       <span class="record-title-badge">함께 읽어요</span>
     </div>
     <div class="oath-list">
       <div class="oath-item">
-        <div class="oath-num" style="background:#FF6B35">첫</div>
+        <div class="oath-num" style="background:#FF6B35">하나</div>
         <div class="oath-text">나의 마음과 생각을 깊이 들여다보겠습니다.</div>
       </div>
       <div class="oath-item">
@@ -882,15 +1018,15 @@
         <div class="oath-text">내가 나눌 수 있는 것을 생각하고 나눔을 실천하겠습니다.</div>
       </div>
     </div>
-    <div class="oath-done-banner" id="oathBanner">🎉 선서 완료! 우리 반 최고예요! 👏</div>
+    <div class="oath-done-banner" id="oathBanner">선서 완료! 우리 반 최고입니다.</div>
   </div>
 
   <hr class="divider">
 
   <!-- 메모 -->
   <div class="record-section">
-    <div class="record-title">✏️ 개회 메모 <span class="record-title-badge">기록</span></div>
-    <div class="info-pill">💡 참석 인원이나 특이 사항을 적어요</div>
+    <div class="record-title"><span class="material-icons">edit_note</span> 개회 메모 <span class="record-title-badge">기록</span></div>
+    <div class="info-pill"><span class="material-icons">lightbulb</span> 참석 인원이나 특이 사항을 적어요</div>
     <textarea class="record-textarea" id="record-open" rows="3" placeholder="예) 오늘 참석 인원: 26명 / 결석: 이○○ (사유: 병결)"></textarea>
   </div>
 
@@ -907,7 +1043,7 @@
 ══════════════════════════════════ -->
 <section class="step-card" id="step-1" style="--step-color:#4ECDC4">
   <div class="step-header">
-    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#4ECDC4,#38b2aa)">🪞</div>
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#4ECDC4,#38b2aa)"><span class="material-icons">visibility</span></div>
     <div class="step-title-wrap">
       <div class="step-num" style="color:#4ECDC4">STEP 2</div>
       <div class="step-title" style="color:#4ECDC4">거울(돌아보기) 회의</div>
@@ -915,7 +1051,7 @@
   </div>
 
   <div class="scenario-box" style="border-left-color:#4ECDC4">
-    <div class="scenario-box-title" style="color:#4ECDC4">📜 사회자 대본</div>
+    <div class="scenario-box-title" style="color:#4ECDC4"><span class="material-icons">article</span> 사회자 대본</div>
     <div class="scenario-text">다음은 거울(돌아보기) 회의 시간입니다.
 거울 회의는 좋았던 점, 아쉬웠던 점, 바라는 점을 이야기하는 시간입니다.
 
@@ -926,33 +1062,33 @@
 이제 자치팀별 발표를 시작하겠습니다.
 00팀 발표자 학생부터 차례대로 일어나 발표해 주세요.
 
-발표한 학생들에게 박수를 쳐줍시다. 👏
+발표한 학생들에게 박수를 쳐줍시다. 
 친구들의 의견을 잘 들으며 우리 반을 더 좋은 반으로 만들어 가면 좋겠습니다.</div>
   </div>
 
   <div class="record-section">
-    <div class="record-title">📝 팀별 의견 기록 <span class="record-title-badge" style="background:#4ECDC4">기록</span></div>
+    <div class="record-title"><span class="material-icons">groups</span> 팀별 의견 기록 <span class="record-title-badge" style="background:#4ECDC4">기록</span></div>
     <div class="tip-box">
-      <span>💬</span>
+      <span><span class="material-icons">forum</span></span>
       <span>자치팀별로 발표한 내용을 아래 칸에 정리해요. 좋았던 점·아쉬웠던 점·바라는 점으로 구분해서 적으면 더 좋아요!</span>
     </div>
 
     <div class="mirror-grid">
       <div class="mirror-card">
-        <div class="mirror-card-header" style="background:#2ECC71">😊 좋았던 점</div>
+        <div class="mirror-card-header" style="background:#2ECC71">좋았던 점</div>
         <textarea id="mirror-good" placeholder="우리 반에서 좋았던 점을 써요&#10;예) 체육 시간이 재미있었어요!"></textarea>
       </div>
       <div class="mirror-card">
-        <div class="mirror-card-header" style="background:#FF8C69">😢 아쉬웠던 점</div>
+        <div class="mirror-card-header" style="background:#FF8C69">아쉬웠던 점</div>
         <textarea id="mirror-bad" placeholder="아쉬웠던 점을 솔직하게 써요&#10;예) 쉬는 시간이 너무 짧았어요"></textarea>
       </div>
       <div class="mirror-card">
-        <div class="mirror-card-header" style="background:#9B59B6">🌟 바라는 점</div>
+        <div class="mirror-card-header" style="background:#9B59B6">바라는 점</div>
         <textarea id="mirror-wish" placeholder="앞으로 이랬으면 하는 것을 써요&#10;예) 청소를 모두 같이 했으면 해요"></textarea>
       </div>
     </div>
 
-    <div class="record-title" style="margin-top:4px">📋 추가 메모 <span class="record-title-badge" style="background:#4ECDC4">선택</span></div>
+    <div class="record-title" style="margin-top:4px"><span class="material-icons">description</span> 추가 메모 <span class="record-title-badge" style="background:#4ECDC4">선택</span></div>
     <textarea class="record-textarea" id="mirror-extra" rows="3" placeholder="발표 중 특별히 기억할 내용이나 인상 깊은 의견을 적어요"></textarea>
   </div>
 
@@ -970,7 +1106,7 @@
 ══════════════════════════════════ -->
 <section class="step-card" id="step-2" style="--step-color:#9B59B6">
   <div class="step-header">
-    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#9B59B6,#8e44ad)">🎯</div>
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#9B59B6,#8e44ad)"><span class="material-icons">track_changes</span></div>
     <div class="step-title-wrap">
       <div class="step-num" style="color:#9B59B6">STEP 3</div>
       <div class="step-title" style="color:#9B59B6">다음 달 목표 정하기</div>
@@ -978,7 +1114,7 @@
   </div>
 
   <div class="scenario-box" style="border-left-color:#9B59B6">
-    <div class="scenario-box-title" style="color:#9B59B6">📜 사회자 대본</div>
+    <div class="scenario-box-title" style="color:#9B59B6"><span class="material-icons">article</span> 사회자 대본</div>
     <div class="scenario-text">다음은 다음 달 목표를 정하는 시간입니다.
 우리 반이 다음 달에 함께 실천하면 좋을 목표를 생각해 봅시다. <span class="cue">（잠시 생각할 시간）</span>
 
@@ -992,17 +1128,17 @@
   </div>
 
   <div class="record-section">
-    <div class="record-title">💬 나온 의견 목록 <span class="record-title-badge" style="background:#9B59B6">기록</span></div>
+    <div class="record-title"><span class="material-icons">forum</span> 나온 의견 목록 <span class="record-title-badge" style="background:#9B59B6">기록</span></div>
     <div class="suggestion-list" id="goalOpinionList"></div>
     <button class="btn-add" style="--step-color:#9B59B6; margin-bottom:20px" onclick="addGoalOpinion()">＋ 의견 추가하기</button>
 
     <hr class="divider">
 
-    <div class="record-title">🏆 최종 결정된 목표 <span class="record-title-badge" style="background:#9B59B6">필수</span></div>
-    <div class="info-pill">✅ 투표 결과로 정해진 목표를 적어요</div>
+    <div class="record-title"><span class="material-icons">emoji_events</span> 최종 결정된 목표 <span class="record-title-badge" style="background:#9B59B6">필수</span></div>
+    <div class="info-pill"><span class="material-icons">check_circle</span> 투표 결과로 정해진 목표를 적어요</div>
     <input type="text" class="record-textarea" id="finalGoal" placeholder="예) 쉬는 시간에 복도에서 뛰지 않기" style="display:block; height:auto; padding:13px 16px" oninput="updateGoalDisplay()">
     <div class="goal-display" id="goalDisplay">
-      <div class="goal-display-label">📌 이달의 우리 반 목표</div>
+      <div class="goal-display-label"><span class="material-icons">push_pin</span> 이달의 우리 반 목표</div>
       <div class="goal-display-text" id="goalDisplayText"></div>
     </div>
   </div>
@@ -1021,7 +1157,7 @@
 ══════════════════════════════════ -->
 <section class="step-card" id="step-3" style="--step-color:#E8A020">
   <div class="step-header">
-    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#F9CA24,#e8a020)">💡</div>
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#F9CA24,#e8a020)"><span class="material-icons">lightbulb</span></div>
     <div class="step-title-wrap">
       <div class="step-num" style="color:#E8A020">STEP 4</div>
       <div class="step-title" style="color:#E8A020">제안하기</div>
@@ -1029,21 +1165,21 @@
   </div>
 
   <div class="scenario-box" style="border-left-color:#E8A020">
-    <div class="scenario-box-title" style="color:#E8A020">📜 사회자 대본</div>
+    <div class="scenario-box-title" style="color:#E8A020"><span class="material-icons">article</span> 사회자 대본</div>
     <div class="scenario-text">다음은 제안하기 시간입니다.
 우리 반을 더 나은 반으로 만들기 위한 생각이 있으면 발표해 주세요. <span class="cue">（잠시 생각할 시간）</span>
 
 제안할 때에는 제안하는 이유도 함께 말해 주면 더 좋습니다.
 여러분은 발표자의 말을 잘 들어 주세요. <span class="cue">（발표 후）</span>
 
-좋은 의견을 내 준 학생들에게 박수 부탁드립니다. 👏
+좋은 의견을 내 준 학생들에게 박수 부탁드립니다. 
 오늘 나온 제안은 함께 생각해 보고 실천할 수 있도록 하겠습니다.</div>
   </div>
 
   <div class="record-section">
-    <div class="record-title">📌 제안 내용 기록 <span class="record-title-badge" style="background:#E8A020">기록</span></div>
+    <div class="record-title"><span class="material-icons">campaign</span> 제안 내용 기록 <span class="record-title-badge" style="background:#E8A020">기록</span></div>
     <div class="tip-box" style="border-color:#F9CA24;background:rgba(249,202,36,0.12);color:#7a5e00">
-      <span>💡</span>
+      <span><span class="material-icons">lightbulb</span></span>
       <span>제안 내용과 이유를 함께 적어요. 여러 친구의 의견을 모두 기록할 수 있어요!</span>
     </div>
 
@@ -1074,7 +1210,7 @@
 ══════════════════════════════════ -->
 <section class="step-card" id="step-4" style="--step-color:#9B59B6">
   <div class="step-header">
-    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#9B59B6,#7d3c98)">👩‍🏫</div>
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#9B59B6,#7d3c98)"><span class="material-icons">school</span></div>
     <div class="step-title-wrap">
       <div class="step-num" style="color:#9B59B6">STEP 5</div>
       <div class="step-title" style="color:#9B59B6">선생님 말씀</div>
@@ -1082,15 +1218,15 @@
   </div>
 
   <div class="scenario-box" style="border-left-color:#9B59B6">
-    <div class="scenario-box-title" style="color:#9B59B6">📜 사회자 대본</div>
+    <div class="scenario-box-title" style="color:#9B59B6"><span class="material-icons">article</span> 사회자 대본</div>
     <div class="scenario-text">다음은 담임 선생님 말씀을 듣겠습니다.
-선생님, 말씀 부탁드립니다. 🙏</div>
+선생님, 말씀 부탁드립니다. </div>
   </div>
 
   <div class="teacher-box">
-    <span class="teacher-emoji">👩‍🏫</span>
-    <div class="teacher-prompt">선생님 말씀을 바른 자세로 귀 기울여 들어요! 👂</div>
-    <div class="record-title" style="justify-content:center; margin-bottom:12px">📝 선생님 말씀 요약 <span class="record-title-badge" style="background:#9B59B6">기록</span></div>
+    <span class="teacher-emoji"><span class="material-icons">school</span></span>
+    <div class="teacher-prompt">선생님 말씀을 바른 자세로 귀 기울여 들어요! </div>
+    <div class="record-title" style="justify-content:center; margin-bottom:12px"><span class="material-icons">fact_check</span> 선생님 말씀 요약 <span class="record-title-badge" style="background:#9B59B6">기록</span></div>
     <textarea class="record-textarea" id="teacher-note" rows="4" placeholder="선생님 말씀 중 중요한 내용을 정리해요&#10;예) 다음 주 현장 체험학습 준비물 안내, 급식 예절 지키기 강조"></textarea>
   </div>
 
@@ -1108,7 +1244,7 @@
 ══════════════════════════════════ -->
 <section class="step-card" id="step-5" style="--step-color:#2ECC71">
   <div class="step-header">
-    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#2ECC71,#27ae60)">🏁</div>
+    <div class="step-icon-wrap" style="background:linear-gradient(135deg,#2ECC71,#27ae60)"><span class="material-icons">flag</span></div>
     <div class="step-title-wrap">
       <div class="step-num" style="color:#2ECC71">STEP 6</div>
       <div class="step-title" style="color:#2ECC71">폐회 선언</div>
@@ -1116,7 +1252,7 @@
   </div>
 
   <div class="close-card">
-    <div class="close-title">수고했어요! 🎉</div>
+    <div class="close-title">수고했어요</div>
     <div class="close-sub">끝까지 바르게 참여해 준 친구들 감사합니다.</div>
     <div style="font-size:0.9rem;color:rgba(255,255,255,0.6);line-height:1.7" id="closingScript">
       이상으로 <strong id="c-month" style="color:#F9CA24">0</strong>월 우리반 학급회의를 마치겠습니다. 감사합니다.
@@ -1125,22 +1261,22 @@
 
   <!-- 회의 결과 내보내기 -->
   <div class="export-section">
-    <div class="export-title">📤 회의 결과 내보내기</div>
+    <div class="export-title"><span class="material-icons">ios_share</span> 회의 결과 내보내기</div>
     <div class="export-desc">지금까지 기록한 회의 내용을 저장하거나 복사할 수 있어요.</div>
     <div class="export-preview" id="exportPreview"></div>
     <div class="export-buttons">
-      <button class="btn-export clipboard" onclick="copyClipboard()">📋 클립보드 복사</button>
-      <button class="btn-export txt" onclick="downloadTxt()">📄 TXT 다운로드</button>
-      <button class="btn-export json" onclick="downloadJson()">🗂️ JSON 다운로드</button>
+      <button class="btn-export clipboard" onclick="copyClipboard()">클립보드 복사</button>
+      <button class="btn-export txt" onclick="downloadTxt()">TXT 다운로드</button>
+      <button class="btn-export json" onclick="downloadJson()">JSON 다운로드</button>
     </div>
   </div>
 
   <!-- JSON 불러오기 -->
   <div class="import-section">
-    <div class="import-title">📂 이전 회의 기록 불러오기</div>
+    <div class="import-title"><span class="material-icons">folder_open</span> 이전 회의 기록 불러오기</div>
     <div class="import-desc">저장해 둔 JSON 파일을 열어서 이전 회의 내용을 복원해요.</div>
     <label class="btn-import" for="jsonFileInput" title="JSON 파일 불러오기">
-      <span class="import-icon">📂</span>
+      <span class="import-icon"><span class="material-icons">upload_file</span></span>
       <span class="import-label">JSON 파일 열기</span>
     </label>
     <input type="file" id="jsonFileInput" accept=".json" style="display:none" onchange="loadJsonFile(event)">
@@ -1156,12 +1292,31 @@
 <!-- FOOTER -->
 <footer>
   <a href="https://litt.ly/chichiboo" target="_blank" rel="noopener">
-    🎭 Created by. 교육뮤지컬 꿈꾸는 치수쌤
+    Created by. 교육뮤지컬 꿈꾸는 치수쌤
   </a>
 </footer>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
+
+<!-- HELP MODAL -->
+<div class="help-modal" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle">
+  <div class="help-modal-content">
+    <div class="help-modal-header">
+      <h3 id="helpModalTitle">서비스 사용법</h3>
+      <button class="help-close" onclick="closeHelpModal()" aria-label="닫기">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    <ol class="help-list">
+      <li>기록모드에서는 각 단계의 기록 입력란을 채우고 필요 시 사회자 대본을 펼쳐 확인하세요.</li>
+      <li>발표모드는 핵심 진행 문구를 크게 보여 주는 슬라이드형 화면입니다.</li>
+      <li>6단계에서 회의 결과를 클립보드, TXT, JSON으로 저장할 수 있습니다.</li>
+      <li>JSON 파일 열기 버튼으로 이전 회의 기록을 복원할 수 있습니다.</li>
+    </ol>
+    <div class="help-footer">개발/제작: 교육뮤지컬 꿈꾸는 치수쌤</div>
+  </div>
+</div>
 
 <script>
   // ──────────────────────────────────────────
@@ -1175,6 +1330,7 @@
   // Dynamic lists
   let goalOpinions = [];   // [{text}]
   let suggestions  = [];   // [{content, reason}]
+  let currentMode = 'record';
 
   // ──────────────────────────────────────────
   // INIT
@@ -1185,6 +1341,8 @@
     addSuggestion();
     addSuggestion();
     syncMonth();
+    initScriptAccordions();
+    setMode('record');
   });
 
   // Month sync
@@ -1193,6 +1351,50 @@
     const v = document.getElementById('monthInput').value || '0';
     document.querySelectorAll('#s1-month, #c-month').forEach(el => el.textContent = v);
   }
+
+  function setMode(mode) {
+    currentMode = mode;
+    document.body.classList.toggle('presentation-mode', mode === 'presentation');
+    document.getElementById('modeRecordBtn').classList.toggle('active', mode === 'record');
+    document.getElementById('modePresentBtn').classList.toggle('active', mode === 'presentation');
+    document.querySelectorAll('.scenario-box').forEach((box) => {
+      if (mode === 'presentation') box.classList.add('open');
+      else box.classList.remove('open');
+    });
+  }
+
+  function initScriptAccordions() {
+    document.querySelectorAll('.scenario-box').forEach((box, idx) => {
+      const title = box.querySelector('.scenario-box-title');
+      const text = box.querySelector('.scenario-text');
+      if (!title || !text) return;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'script-toggle';
+      btn.innerHTML = `<span class="script-toggle-left">${title.innerHTML}</span><span class="material-icons expand-icon">expand_more</span>`;
+      btn.addEventListener('click', () => {
+        if (currentMode !== 'record') return;
+        box.classList.toggle('open');
+      });
+      title.remove();
+      text.classList.add('script-body');
+      box.insertBefore(btn, text);
+      box.classList.remove('open');
+      box.dataset.scriptIndex = String(idx);
+    });
+  }
+
+  function openHelpModal() {
+    document.getElementById('helpModal').classList.add('open');
+  }
+  function closeHelpModal() {
+    document.getElementById('helpModal').classList.remove('open');
+  }
+  document.addEventListener('click', (e) => {
+    const modal = document.getElementById('helpModal');
+    if (modal.classList.contains('open') && e.target === modal) closeHelpModal();
+  });
 
   // ──────────────────────────────────────────
   // NAVIGATION
@@ -1342,8 +1544,8 @@
   function buildTxtString(d) {
     const divider = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
     const lines = [];
-    lines.push(`🏫 ${d.title}`);
-    lines.push(`📅 ${d.date}  |  ${d.month}`);
+    lines.push(`학급회의 ${d.title}`);
+    lines.push(`날짜 ${d.date}  |  ${d.month}`);
     lines.push(divider);
 
     lines.push('');
@@ -1352,24 +1554,24 @@
 
     lines.push('');
     lines.push('【 2. 거울(돌아보기) 회의 】');
-    lines.push('😊 좋았던 점:');
+    lines.push('좋았던 점:');
     lines.push(d.step2_거울회의.좋았던점 || '  (기록 없음)');
-    lines.push('😢 아쉬웠던 점:');
+    lines.push('아쉬웠던 점:');
     lines.push(d.step2_거울회의.아쉬웠던점 || '  (기록 없음)');
-    lines.push('🌟 바라는 점:');
+    lines.push('바라는 점:');
     lines.push(d.step2_거울회의.바라는점 || '  (기록 없음)');
     if (d.step2_거울회의.추가메모) {
-      lines.push('📋 추가 메모:');
+      lines.push('추가 메모:');
       lines.push(d.step2_거울회의.추가메모);
     }
 
     lines.push('');
     lines.push('【 3. 다음 달 목표 정하기 】');
-    lines.push('💬 나온 의견:');
+    lines.push('나온 의견:');
     if (d.step3_목표정하기.나온의견.length) {
       d.step3_목표정하기.나온의견.forEach((o, i) => lines.push(`  ${i+1}. ${o}`));
     } else { lines.push('  (기록 없음)'); }
-    lines.push(`🏆 최종 목표: ${d.step3_목표정하기.최종목표 || '(미정)'}`);
+    lines.push(`최종 목표: ${d.step3_목표정하기.최종목표 || '(미정)'}`);
 
     lines.push('');
     lines.push('【 4. 제안하기 】');
@@ -1396,7 +1598,7 @@
   function copyClipboard() {
     const d = collectData();
     const txt = buildTxtString(d);
-    navigator.clipboard.writeText(txt).then(() => showToast('📋 클립보드에 복사했어요!')).catch(() => {
+    navigator.clipboard.writeText(txt).then(() => showToast('클립보드에 복사했습니다.')).catch(() => {
       // fallback
       const ta = document.createElement('textarea');
       ta.value = txt;
@@ -1404,7 +1606,7 @@
       ta.select();
       document.execCommand('copy');
       document.body.removeChild(ta);
-      showToast('📋 클립보드에 복사했어요!');
+      showToast('클립보드에 복사했습니다.');
     });
   }
 
@@ -1413,14 +1615,14 @@
     const txt = buildTxtString(d);
     const month = document.getElementById('monthInput').value || '0';
     download(`우리반_학급회의_${month}월.txt`, txt, 'text/plain;charset=utf-8');
-    showToast('📄 TXT 파일을 저장했어요!');
+    showToast('TXT 파일을 저장했습니다.');
   }
 
   function downloadJson() {
     const d = collectData();
     const month = document.getElementById('monthInput').value || '0';
     download(`우리반_학급회의_${month}월.json`, JSON.stringify(d, null, 2), 'application/json');
-    showToast('🗂️ JSON 파일을 저장했어요!');
+    showToast('JSON 파일을 저장했습니다.');
   }
 
   function download(filename, content, mimeType) {
@@ -1445,11 +1647,11 @@
       try {
         const d = JSON.parse(e.target.result);
         restoreFromData(d);
-        showToast('✅ 회의 기록을 성공적으로 불러왔어요!');
+        showToast('회의 기록을 불러왔습니다.');
         // reset file input so same file can be re-loaded
         event.target.value = '';
       } catch (err) {
-        showToast('⚠️ 파일을 읽을 수 없어요. JSON 파일인지 확인해 주세요.');
+        showToast('파일을 읽을 수 없습니다. JSON 파일인지 확인해 주세요.');
       }
     };
     reader.readAsText(file, 'UTF-8');
