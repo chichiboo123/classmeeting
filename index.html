@@ -103,7 +103,7 @@
   }
   .mode-switch {
     display: inline-flex;
-    border: 2px solid rgba(255,255,255,0.28);
+    border: 1.5px solid rgba(255,255,255,0.28);
     border-radius: 999px;
     overflow: hidden;
     background: rgba(255,255,255,0.08);
@@ -111,11 +111,12 @@
   .mode-btn {
     border: none;
     background: transparent;
-    color: rgba(255,255,255,0.75);
-    padding: 7px 12px;
-    font-size: 0.78rem;
+    color: rgba(255,255,255,0.7);
+    padding: 4px 9px;
+    font-size: 0.68rem;
     font-weight: 700;
     cursor: pointer;
+    white-space: nowrap;
   }
   .mode-btn.active {
     color: var(--navy);
@@ -864,38 +865,101 @@
   .help-list { margin-left: 18px; line-height: 1.7; font-size: 0.92rem; color: #444; }
   .help-footer { margin-top: 16px; font-size: 0.8rem; color: #777; text-align: center; }
 
-  body.presentation-mode { background: #fff; }
+  body.presentation-mode { background: var(--cream); }
   body.presentation-mode main { max-width: 1120px; padding-top: 18px; }
   body.presentation-mode .record-section,
   body.presentation-mode .export-section,
   body.presentation-mode .import-section,
   body.presentation-mode .tip-box,
-  body.presentation-mode .info-pill { display: none; }
-  body.presentation-mode .step-title { font-size: 2.2rem; }
-  body.presentation-mode .scenario-box { padding: 28px; }
-  body.presentation-mode .script-body { display: block !important; }
-  body.presentation-mode .script-toggle { margin-bottom: 16px; font-size: 1rem; }
-  body.presentation-mode .scenario-text { font-size: 1.5rem; line-height: 1.9; }
-  body.presentation-mode .nav-buttons { justify-content: center; }
+  body.presentation-mode .info-pill,
+  body.presentation-mode .step-header,
+  body.presentation-mode .scenario-box { display: none !important; }
+  body.presentation-mode .nav-buttons { justify-content: center; margin-top: 20px; }
   body.presentation-mode .btn-prev,
-  body.presentation-mode .btn-next { font-size: 1.1rem; padding: 14px 30px; }
+  body.presentation-mode .btn-next { font-size: 1.1rem; padding: 14px 34px; }
+
+  /* ── PRESENTATION SLIDE ── */
+  .pres-slide { display: none; }
+  body.presentation-mode .pres-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 62vh;
+    text-align: center;
+    padding: 32px 16px;
+    animation: fadeUp 0.35s ease;
+  }
+  .pres-slide-badge {
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--step-color, var(--orange));
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0.8;
+  }
+  .pres-slide-icon {
+    width: 84px; height: 84px;
+    border-radius: 24px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px;
+    box-shadow: var(--shadow-lg);
+  }
+  .pres-slide-icon .material-icons { font-size: 2.6rem; color: #fff; }
+  .pres-slide-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 2.6rem;
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+    color: var(--step-color, var(--orange));
+    margin-bottom: 30px;
+  }
+  .pres-slide-points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 560px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .pres-slide-point {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: color-mix(in srgb, var(--step-color, var(--orange)) 7%, white);
+    border: 2px solid color-mix(in srgb, var(--step-color, var(--orange)) 22%, transparent);
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .pres-slide-point-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--step-color, var(--orange));
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .pres-slide-point-icon .material-icons { font-size: 1.1rem; color: #fff; }
 
   @media (max-width: 900px) {
-    .header-inner { flex-wrap: wrap; align-items: flex-start; }
-    .header-controls { width: 100%; justify-content: flex-start; }
-    .month-badge-wrap { order: 1; }
+    .header-inner { gap: 10px; }
+    .header-controls { gap: 8px; }
   }
   @media (max-width: 600px) {
-    .header-inner { padding: 12px 14px; gap: 10px; }
-    .header-title { font-size: 1.2rem; }
-    .header-subtitle { font-size: 0.75rem; }
+    .header-inner { padding: 10px 14px; gap: 8px; }
+    .header-title { font-size: 1.15rem; }
+    .header-subtitle { font-size: 0.72rem; }
     main { padding: 18px 12px 24px; }
     .nav-buttons { gap: 8px; }
     .btn-prev, .btn-next, .btn-export, .btn-import { min-height: 44px; padding: 10px 16px; font-size: 0.86rem; }
     .suggestion-item-fields { flex-direction: column; }
-    .mode-switch { width: 100%; }
-    .mode-btn { flex: 1; }
     .help-modal-content { padding: 16px; }
+    .pres-slide-title { font-size: 1.9rem; }
+    .pres-slide-point { font-size: 0.95rem; padding: 11px 14px; }
   }
 </style>
 </head>
@@ -987,6 +1051,18 @@
     </div>
   </div>
 
+  <!-- 발표 슬라이드 -->
+  <div class="pres-slide" style="--step-color:#FF6B35">
+    <div class="pres-slide-badge">STEP 1</div>
+    <div class="pres-slide-icon" style="background:linear-gradient(135deg,#FF6B35,#e8522a)"><span class="material-icons">campaign</span></div>
+    <div class="pres-slide-title">개회선언 &amp; 우리반 약속 선서</div>
+    <ul class="pres-slide-points">
+      <li class="pres-slide-point" style="--step-color:#FF6B35"><span class="pres-slide-point-icon"><span class="material-icons">self_improvement</span></span><span>바르게 앉아 주세요</span></li>
+      <li class="pres-slide-point" style="--step-color:#FF6B35"><span class="pres-slide-point-icon"><span class="material-icons">campaign</span></span><span><strong id="ps1-month">0</strong>월 우리반 학급회의를 시작합니다</span></li>
+      <li class="pres-slide-point" style="--step-color:#FF6B35"><span class="pres-slide-point-icon"><span class="material-icons">handshake</span></span><span>우리반 약속 선서를 함께 읽겠습니다</span></li>
+    </ul>
+  </div>
+
   <!-- 시나리오 -->
   <div class="scenario-box">
     <div class="scenario-box-title"><span class="material-icons">article</span> 사회자 대본</div>
@@ -1048,6 +1124,18 @@
       <div class="step-num" style="color:#4ECDC4">STEP 2</div>
       <div class="step-title" style="color:#4ECDC4">거울(돌아보기) 회의</div>
     </div>
+  </div>
+
+  <!-- 발표 슬라이드 -->
+  <div class="pres-slide" style="--step-color:#4ECDC4">
+    <div class="pres-slide-badge">STEP 2</div>
+    <div class="pres-slide-icon" style="background:linear-gradient(135deg,#4ECDC4,#38b2aa)"><span class="material-icons">visibility</span></div>
+    <div class="pres-slide-title">거울(돌아보기) 회의</div>
+    <ul class="pres-slide-points">
+      <li class="pres-slide-point" style="--step-color:#4ECDC4"><span class="pres-slide-point-icon"><span class="material-icons">groups</span></span><span>자치팀별로 모여 이야기 나누기</span></li>
+      <li class="pres-slide-point" style="--step-color:#4ECDC4"><span class="pres-slide-point-icon"><span class="material-icons">format_list_bulleted</span></span><span>좋았던 점 · 아쉬웠던 점 · 바라는 점</span></li>
+      <li class="pres-slide-point" style="--step-color:#4ECDC4"><span class="pres-slide-point-icon"><span class="material-icons">record_voice_over</span></span><span>팀별 대표 발표 시작!</span></li>
+    </ul>
   </div>
 
   <div class="scenario-box" style="border-left-color:#4ECDC4">
@@ -1113,6 +1201,18 @@
     </div>
   </div>
 
+  <!-- 발표 슬라이드 -->
+  <div class="pres-slide" style="--step-color:#9B59B6">
+    <div class="pres-slide-badge">STEP 3</div>
+    <div class="pres-slide-icon" style="background:linear-gradient(135deg,#9B59B6,#8e44ad)"><span class="material-icons">track_changes</span></div>
+    <div class="pres-slide-title">다음 달 목표 정하기</div>
+    <ul class="pres-slide-points">
+      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">lightbulb</span></span><span>다음 달 목표를 함께 생각해요</span></li>
+      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">how_to_vote</span></span><span>의견 발표 후 투표로 결정</span></li>
+      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">emoji_events</span></span><span>정해진 목표를 다 함께 읽겠습니다</span></li>
+    </ul>
+  </div>
+
   <div class="scenario-box" style="border-left-color:#9B59B6">
     <div class="scenario-box-title" style="color:#9B59B6"><span class="material-icons">article</span> 사회자 대본</div>
     <div class="scenario-text">다음은 다음 달 목표를 정하는 시간입니다.
@@ -1162,6 +1262,18 @@
       <div class="step-num" style="color:#E8A020">STEP 4</div>
       <div class="step-title" style="color:#E8A020">제안하기</div>
     </div>
+  </div>
+
+  <!-- 발표 슬라이드 -->
+  <div class="pres-slide" style="--step-color:#E8A020">
+    <div class="pres-slide-badge">STEP 4</div>
+    <div class="pres-slide-icon" style="background:linear-gradient(135deg,#F9CA24,#e8a020)"><span class="material-icons">lightbulb</span></div>
+    <div class="pres-slide-title">제안하기</div>
+    <ul class="pres-slide-points">
+      <li class="pres-slide-point" style="--step-color:#E8A020"><span class="pres-slide-point-icon"><span class="material-icons">tips_and_updates</span></span><span>우리 반을 더 나은 반으로!</span></li>
+      <li class="pres-slide-point" style="--step-color:#E8A020"><span class="pres-slide-point-icon"><span class="material-icons">record_voice_over</span></span><span>제안 내용과 이유를 함께 말해요</span></li>
+      <li class="pres-slide-point" style="--step-color:#E8A020"><span class="pres-slide-point-icon"><span class="material-icons">front_hand</span></span><span>손 들고 차례대로 발표해 주세요</span></li>
+    </ul>
   </div>
 
   <div class="scenario-box" style="border-left-color:#E8A020">
@@ -1217,6 +1329,17 @@
     </div>
   </div>
 
+  <!-- 발표 슬라이드 -->
+  <div class="pres-slide" style="--step-color:#9B59B6">
+    <div class="pres-slide-badge">STEP 5</div>
+    <div class="pres-slide-icon" style="background:linear-gradient(135deg,#9B59B6,#7d3c98)"><span class="material-icons">school</span></div>
+    <div class="pres-slide-title">선생님 말씀</div>
+    <ul class="pres-slide-points">
+      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">self_improvement</span></span><span>바른 자세로 앉아 주세요</span></li>
+      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">hearing</span></span><span>선생님 말씀을 귀 기울여 듣겠습니다</span></li>
+    </ul>
+  </div>
+
   <div class="scenario-box" style="border-left-color:#9B59B6">
     <div class="scenario-box-title" style="color:#9B59B6"><span class="material-icons">article</span> 사회자 대본</div>
     <div class="scenario-text">다음은 담임 선생님 말씀을 듣겠습니다.
@@ -1249,6 +1372,18 @@
       <div class="step-num" style="color:#2ECC71">STEP 6</div>
       <div class="step-title" style="color:#2ECC71">폐회 선언</div>
     </div>
+  </div>
+
+  <!-- 발표 슬라이드 -->
+  <div class="pres-slide" style="--step-color:#2ECC71">
+    <div class="pres-slide-badge">STEP 6</div>
+    <div class="pres-slide-icon" style="background:linear-gradient(135deg,#2ECC71,#27ae60)"><span class="material-icons">flag</span></div>
+    <div class="pres-slide-title">폐회 선언</div>
+    <ul class="pres-slide-points">
+      <li class="pres-slide-point" style="--step-color:#2ECC71"><span class="pres-slide-point-icon"><span class="material-icons">celebration</span></span><span>모두 수고했습니다!</span></li>
+      <li class="pres-slide-point" style="--step-color:#2ECC71"><span class="pres-slide-point-icon"><span class="material-icons">flag</span></span><span>이상으로 <strong id="ps6-month">0</strong>월 학급회의를 마칩니다</span></li>
+      <li class="pres-slide-point" style="--step-color:#2ECC71"><span class="pres-slide-point-icon"><span class="material-icons">favorite</span></span><span>끝까지 바르게 참여해 줘서 감사합니다</span></li>
+    </ul>
   </div>
 
   <div class="close-card">
@@ -1349,7 +1484,7 @@
   document.getElementById('monthInput').addEventListener('input', syncMonth);
   function syncMonth() {
     const v = document.getElementById('monthInput').value || '0';
-    document.querySelectorAll('#s1-month, #c-month').forEach(el => el.textContent = v);
+    document.querySelectorAll('#s1-month, #c-month, #ps1-month, #ps6-month').forEach(el => el.textContent = v);
   }
 
   function setMode(mode) {
@@ -1357,10 +1492,6 @@
     document.body.classList.toggle('presentation-mode', mode === 'presentation');
     document.getElementById('modeRecordBtn').classList.toggle('active', mode === 'record');
     document.getElementById('modePresentBtn').classList.toggle('active', mode === 'presentation');
-    document.querySelectorAll('.scenario-box').forEach((box) => {
-      if (mode === 'presentation') box.classList.add('open');
-      else box.classList.remove('open');
-    });
   }
 
   function initScriptAccordions() {
