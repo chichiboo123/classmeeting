@@ -1046,6 +1046,91 @@
     .help-btn { width: 28px; height: 28px; }
     .help-btn .material-icons { font-size: 0.95rem; }
   }
+
+  /* ── 콘텐츠 편집 기능 ───────────────────────── */
+  /* 헤더 편집 토글 활성 상태 */
+  .help-btn.edit-active { background: #fff; color: var(--navy); border-color: #fff; }
+
+  /* {월} 토큰 표시 */
+  .month-token { font-weight: 800; }
+  .scenario-text .month-token {
+    background: var(--yellow); border-radius: 4px; padding: 0 4px;
+    font-weight: 700; color: var(--text);
+  }
+  .close-card .month-token { color: var(--yellow); }
+
+  /* 인라인 편집 모드 */
+  body.edit-mode [data-edit-key] {
+    outline: 2px dashed rgba(78,205,196,0.85);
+    outline-offset: 2px; border-radius: 4px;
+    cursor: text; transition: background 0.15s;
+    background: rgba(78,205,196,0.07);
+  }
+  body.edit-mode [data-edit-key]:hover { background: rgba(78,205,196,0.16); }
+  body.edit-mode [data-edit-key]:focus {
+    outline: 2px solid var(--orange, #FF6B35);
+    background: #fff; box-shadow: 0 0 0 3px rgba(255,107,53,0.18);
+  }
+  body.edit-mode .scenario-text[data-edit-key] { white-space: pre-wrap; }
+
+  /* 편집 모드 하단 바 */
+  .edit-mode-bar {
+    position: fixed; left: 50%; bottom: 18px; transform: translate(-50%, 140%);
+    background: var(--navy); color: #fff; border-radius: 999px;
+    padding: 10px 14px 10px 18px; display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.28); z-index: 10000;
+    font-size: 0.84rem; max-width: calc(100% - 24px);
+    transition: transform 0.3s cubic-bezier(.2,.8,.3,1); opacity: 0; pointer-events: none;
+  }
+  .edit-mode-bar.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+  .edit-mode-bar .material-icons { font-size: 1.1rem; color: var(--yellow); }
+  .edit-mode-bar b { color: var(--yellow); }
+  .edit-mode-bar .edit-done-btn {
+    border: none; background: var(--yellow); color: var(--navy);
+    font-weight: 800; border-radius: 999px; padding: 7px 14px; cursor: pointer;
+    white-space: nowrap; font-size: 0.82rem;
+  }
+  @media (max-width: 600px) {
+    .edit-mode-bar { font-size: 0.74rem; gap: 8px; padding: 9px 10px 9px 14px; }
+    .edit-mode-bar .hide-sm { display: none; }
+  }
+
+  /* 콘텐츠 설정 모달 */
+  .cs-modal-content { width: min(620px, 100%); }
+  .cs-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .cs-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    border: 1.5px solid #e2e4ee; background: #f7f8fc; color: var(--navy);
+    border-radius: 10px; padding: 8px 12px; font-size: 0.8rem; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+  }
+  .cs-btn:hover { background: #eef0f9; }
+  .cs-btn .material-icons { font-size: 1rem; }
+  .cs-btn.danger { color: #c0392b; border-color: #f3d6d2; background: #fdf3f2; }
+  .cs-btn.danger:hover { background: #fbe9e7; }
+  .cs-body { display: flex; flex-direction: column; gap: 16px; }
+  .cs-group { border: 1px solid #eef0f5; border-radius: 14px; padding: 12px 14px; }
+  .cs-group-title {
+    font-weight: 800; font-size: 0.82rem; color: var(--navy);
+    margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed #e6e8f0;
+  }
+  .cs-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  .cs-row:last-child { margin-bottom: 0; }
+  .cs-label { font-size: 0.75rem; font-weight: 700; color: #8a8fa3; }
+  .cs-field { display: flex; align-items: flex-start; gap: 6px; }
+  .cs-input {
+    flex: 1; border: 1.5px solid #e2e4ee; border-radius: 9px;
+    padding: 8px 10px; font-size: 0.86rem; font-family: inherit; color: var(--text);
+    line-height: 1.6; resize: vertical; background: #fff;
+  }
+  .cs-input:focus { outline: none; border-color: var(--teal, #4ECDC4); }
+  .cs-reset {
+    flex-shrink: 0; border: 1.5px solid #e2e4ee; background: #f7f8fc;
+    border-radius: 9px; padding: 7px; cursor: pointer; color: #8a8fa3;
+    display: inline-flex; align-items: center;
+  }
+  .cs-reset:hover { background: #eef0f9; color: var(--navy); }
+  .cs-reset .material-icons { font-size: 1rem; }
 </style>
 </head>
 <body>
@@ -1055,8 +1140,8 @@
   <div class="header-inner">
     <div class="header-emoji"><span class="material-icons">school</span></div>
     <div class="header-titles">
-      <div class="header-title">우리반 학급회의</div>
-      <div class="header-subtitle">모두를 위한 학급회의 도우미</div>
+      <div class="header-title" data-edit-key="header.title">우리반 학급회의</div>
+      <div class="header-subtitle" data-edit-key="header.subtitle">모두를 위한 학급회의 도우미</div>
     </div>
     <div class="header-controls">
     <div class="month-badge-wrap">
@@ -1068,6 +1153,12 @@
       <button class="mode-btn active" id="modeRecordBtn" onclick="setMode('record')">기록모드</button>
       <button class="mode-btn" id="modePresentBtn" onclick="setMode('presentation')">발표모드</button>
     </div>
+    <button class="help-btn" id="editToggleBtn" onclick="toggleEditMode()" aria-label="텍스트 편집 모드" title="텍스트 편집 모드">
+      <span class="material-icons">edit</span>
+    </button>
+    <button class="help-btn" id="contentSettingsBtn" onclick="openContentModal()" aria-label="콘텐츠 설정" title="콘텐츠 설정">
+      <span class="material-icons">tune</span>
+    </button>
     <button class="help-btn" onclick="openHelpModal()" aria-label="사용법 도움말">
       <span class="material-icons">help_outline</span>
     </button>
@@ -1132,7 +1223,7 @@
     <div class="step-icon-wrap" style="background:linear-gradient(135deg,#FF6B35,#e8522a)"><span class="material-icons">campaign</span></div>
     <div class="step-title-wrap">
       <div class="step-num" style="color:#FF6B35">STEP 1</div>
-      <div class="step-title" style="color:#FF6B35">개회선언 &amp; 우리반 약속 선서</div>
+      <div class="step-title" style="color:#FF6B35" data-edit-key="s1.title">개회선언 &amp; 우리반 약속 선서</div>
     </div>
   </div>
 
@@ -1142,10 +1233,10 @@
     <div class="pres-slide active" style="--step-color:#FF6B35">
       <div class="pres-slide-badge">STEP 1 · 1/2</div>
       <div class="pres-slide-icon" style="background:linear-gradient(135deg,#FF6B35,#e8522a)"><span class="material-icons">campaign</span></div>
-      <div class="pres-slide-title">개회선언</div>
+      <div class="pres-slide-title" data-edit-key="s1.pres1Title">개회선언</div>
       <ul class="pres-slide-points">
-        <li class="pres-slide-point" style="--step-color:#FF6B35"><span class="pres-slide-point-icon"><span class="material-icons">self_improvement</span></span><span>바르게 앉아 주세요</span></li>
-        <li class="pres-slide-point" style="--step-color:#FF6B35"><span class="pres-slide-point-icon"><span class="material-icons">campaign</span></span><span><strong id="ps1-month">0</strong>월 우리반 학급회의를 시작합니다</span></li>
+        <li class="pres-slide-point" style="--step-color:#FF6B35"><span class="pres-slide-point-icon"><span class="material-icons">self_improvement</span></span><span data-edit-key="s1.presPoint1">바르게 앉아 주세요</span></li>
+        <li class="pres-slide-point" style="--step-color:#FF6B35"><span class="pres-slide-point-icon"><span class="material-icons">campaign</span></span><span data-edit-key="s1.presPoint2"><span class="month-token">0</span>월 우리반 학급회의를 시작합니다</span></li>
       </ul>
       <div class="pres-subnav">
         <button class="pres-subnav-btn" style="--step-color:#FF6B35" onclick="goToSubSlide(0,1)">우리반 약속 선서 →</button>
@@ -1155,11 +1246,11 @@
     <div class="pres-slide" style="--step-color:#FF6B35">
       <div class="pres-slide-badge">STEP 1 · 2/2</div>
       <div class="pres-slide-icon" style="background:linear-gradient(135deg,#FF6B35,#e8522a)"><span class="material-icons">handshake</span></div>
-      <div class="pres-slide-title">우리반 약속 선서</div>
+      <div class="pres-slide-title" data-edit-key="s1.pres2Title">우리반 약속 선서</div>
       <ul class="pres-oath-list">
-        <li class="pres-oath-item" style="--step-color:#FF6B35"><span class="pres-oath-num" style="background:#FF6B35">하나</span><span>나의 마음과 생각을 깊이 들여다보겠습니다.</span></li>
-        <li class="pres-oath-item" style="--step-color:#4ECDC4"><span class="pres-oath-num" style="background:#4ECDC4">둘</span><span>세상을 따뜻한 눈으로 바라보겠습니다.</span></li>
-        <li class="pres-oath-item" style="--step-color:#9B59B6"><span class="pres-oath-num" style="background:#9B59B6">셋</span><span>내가 나눌 수 있는 것을 생각하고 나눔을 실천하겠습니다.</span></li>
+        <li class="pres-oath-item" style="--step-color:#FF6B35"><span class="pres-oath-num" style="background:#FF6B35">하나</span><span data-edit-key="oath.1">나의 마음과 생각을 깊이 들여다보겠습니다.</span></li>
+        <li class="pres-oath-item" style="--step-color:#4ECDC4"><span class="pres-oath-num" style="background:#4ECDC4">둘</span><span data-edit-key="oath.2">세상을 따뜻한 눈으로 바라보겠습니다.</span></li>
+        <li class="pres-oath-item" style="--step-color:#9B59B6"><span class="pres-oath-num" style="background:#9B59B6">셋</span><span data-edit-key="oath.3">내가 나눌 수 있는 것을 생각하고 나눔을 실천하겠습니다.</span></li>
       </ul>
       <div class="pres-subnav">
         <button class="pres-subnav-btn" style="--step-color:#FF6B35" onclick="goToSubSlide(0,0)">← 개회선언</button>
@@ -1170,10 +1261,10 @@
   <!-- 시나리오 -->
   <div class="scenario-box">
     <div class="scenario-box-title"><span class="material-icons">article</span> 사회자 대본</div>
-    <div class="scenario-text">안녕하세요. 이제 우리반 학급회의를 시작하려고 합니다.
+    <div class="scenario-text" data-edit-key="s1.script">안녕하세요. 이제 우리반 학급회의를 시작하려고 합니다.
 친구들은 바르게 앉아 주시기 바랍니다.
 
-지금부터 <span class="highlight" id="s1-month">0</span>월 우리반 학급회의를 시작합니다.
+지금부터 <span class="month-token">0</span>월 우리반 학급회의를 시작합니다.
 먼저 우리반 약속을 함께 읽겠습니다.
 한 문장씩 제가 읽으면, 여러분은 따라 읽어 주십시오.</div>
   </div>
@@ -1187,18 +1278,18 @@
     <div class="oath-list">
       <div class="oath-item">
         <div class="oath-num" style="background:#FF6B35">하나</div>
-        <div class="oath-text">나의 마음과 생각을 깊이 들여다보겠습니다.</div>
+        <div class="oath-text" data-edit-key="oath.1">나의 마음과 생각을 깊이 들여다보겠습니다.</div>
       </div>
       <div class="oath-item">
         <div class="oath-num" style="background:#4ECDC4">둘</div>
-        <div class="oath-text">세상을 따뜻한 눈으로 바라보겠습니다.</div>
+        <div class="oath-text" data-edit-key="oath.2">세상을 따뜻한 눈으로 바라보겠습니다.</div>
       </div>
       <div class="oath-item">
         <div class="oath-num" style="background:#9B59B6">셋</div>
-        <div class="oath-text">내가 나눌 수 있는 것을 생각하고 나눔을 실천하겠습니다.</div>
+        <div class="oath-text" data-edit-key="oath.3">내가 나눌 수 있는 것을 생각하고 나눔을 실천하겠습니다.</div>
       </div>
     </div>
-    <div class="oath-done-banner" id="oathBanner">선서 완료! 우리 반 최고입니다.</div>
+    <div class="oath-done-banner" id="oathBanner" data-edit-key="oath.banner">선서 완료! 우리 반 최고입니다.</div>
   </div>
 
   <hr class="divider">
@@ -1226,7 +1317,7 @@
     <div class="step-icon-wrap" style="background:linear-gradient(135deg,#4ECDC4,#38b2aa)"><span class="material-icons">visibility</span></div>
     <div class="step-title-wrap">
       <div class="step-num" style="color:#4ECDC4">STEP 2</div>
-      <div class="step-title" style="color:#4ECDC4">거울(돌아보기) 회의</div>
+      <div class="step-title" style="color:#4ECDC4" data-edit-key="s2.title">거울(돌아보기) 회의</div>
     </div>
   </div>
 
@@ -1234,17 +1325,17 @@
   <div class="pres-slide" style="--step-color:#4ECDC4">
     <div class="pres-slide-badge">STEP 2</div>
     <div class="pres-slide-icon" style="background:linear-gradient(135deg,#4ECDC4,#38b2aa)"><span class="material-icons">visibility</span></div>
-    <div class="pres-slide-title">거울(돌아보기) 회의</div>
+    <div class="pres-slide-title" data-edit-key="s2.title">거울(돌아보기) 회의</div>
     <ul class="pres-slide-points">
-      <li class="pres-slide-point" style="--step-color:#4ECDC4"><span class="pres-slide-point-icon"><span class="material-icons">groups</span></span><span>자치팀별로 모여 이야기 나누기</span></li>
-      <li class="pres-slide-point" style="--step-color:#4ECDC4"><span class="pres-slide-point-icon"><span class="material-icons">format_list_bulleted</span></span><span>좋았던 점 · 아쉬웠던 점 · 바라는 점</span></li>
-      <li class="pres-slide-point" style="--step-color:#4ECDC4"><span class="pres-slide-point-icon"><span class="material-icons">record_voice_over</span></span><span>팀별 대표 발표 시작!</span></li>
+      <li class="pres-slide-point" style="--step-color:#4ECDC4"><span class="pres-slide-point-icon"><span class="material-icons">groups</span></span><span data-edit-key="s2.presPoint1">자치팀별로 모여 이야기 나누기</span></li>
+      <li class="pres-slide-point" style="--step-color:#4ECDC4"><span class="pres-slide-point-icon"><span class="material-icons">format_list_bulleted</span></span><span data-edit-key="s2.presPoint2">좋았던 점 · 아쉬웠던 점 · 바라는 점</span></li>
+      <li class="pres-slide-point" style="--step-color:#4ECDC4"><span class="pres-slide-point-icon"><span class="material-icons">record_voice_over</span></span><span data-edit-key="s2.presPoint3">팀별 대표 발표 시작!</span></li>
     </ul>
   </div>
 
   <div class="scenario-box" style="border-left-color:#4ECDC4">
     <div class="scenario-box-title" style="color:#4ECDC4"><span class="material-icons">article</span> 사회자 대본</div>
-    <div class="scenario-text">다음은 거울(돌아보기) 회의 시간입니다.
+    <div class="scenario-text" data-edit-key="s2.script">다음은 거울(돌아보기) 회의 시간입니다.
 거울 회의는 좋았던 점, 아쉬웠던 점, 바라는 점을 이야기하는 시간입니다.
 
 먼저 자치팀별로 모여 이야기를 나누겠습니다.
@@ -1267,15 +1358,15 @@
 
     <div class="mirror-grid">
       <div class="mirror-card">
-        <div class="mirror-card-header" style="background:#2ECC71">좋았던 점</div>
+        <div class="mirror-card-header" style="background:#2ECC71" data-edit-key="s2.labelGood">좋았던 점</div>
         <textarea id="mirror-good" placeholder="우리 반에서 좋았던 점을 써요&#10;예) 체육 시간이 재미있었어요!"></textarea>
       </div>
       <div class="mirror-card">
-        <div class="mirror-card-header" style="background:#FF8C69">아쉬웠던 점</div>
+        <div class="mirror-card-header" style="background:#FF8C69" data-edit-key="s2.labelBad">아쉬웠던 점</div>
         <textarea id="mirror-bad" placeholder="아쉬웠던 점을 솔직하게 써요&#10;예) 쉬는 시간이 너무 짧았어요"></textarea>
       </div>
       <div class="mirror-card">
-        <div class="mirror-card-header" style="background:#9B59B6">바라는 점</div>
+        <div class="mirror-card-header" style="background:#9B59B6" data-edit-key="s2.labelWish">바라는 점</div>
         <textarea id="mirror-wish" placeholder="앞으로 이랬으면 하는 것을 써요&#10;예) 청소를 모두 같이 했으면 해요"></textarea>
       </div>
     </div>
@@ -1301,7 +1392,7 @@
     <div class="step-icon-wrap" style="background:linear-gradient(135deg,#9B59B6,#8e44ad)"><span class="material-icons">track_changes</span></div>
     <div class="step-title-wrap">
       <div class="step-num" style="color:#9B59B6">STEP 3</div>
-      <div class="step-title" style="color:#9B59B6">다음 달 목표 정하기</div>
+      <div class="step-title" style="color:#9B59B6" data-edit-key="s3.title">다음 달 목표 정하기</div>
     </div>
   </div>
 
@@ -1309,11 +1400,11 @@
   <div class="pres-slide" style="--step-color:#9B59B6">
     <div class="pres-slide-badge">STEP 3</div>
     <div class="pres-slide-icon" style="background:linear-gradient(135deg,#9B59B6,#8e44ad)"><span class="material-icons">track_changes</span></div>
-    <div class="pres-slide-title">다음 달 목표 정하기</div>
+    <div class="pres-slide-title" data-edit-key="s3.title">다음 달 목표 정하기</div>
     <ul class="pres-slide-points">
-      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">lightbulb</span></span><span>다음 달 목표를 함께 생각해요</span></li>
-      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">how_to_vote</span></span><span>의견 발표 후 투표로 결정</span></li>
-      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">emoji_events</span></span><span>정해진 목표를 다 함께 읽겠습니다</span></li>
+      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">lightbulb</span></span><span data-edit-key="s3.presPoint1">다음 달 목표를 함께 생각해요</span></li>
+      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">how_to_vote</span></span><span data-edit-key="s3.presPoint2">의견 발표 후 투표로 결정</span></li>
+      <li class="pres-slide-point" style="--step-color:#9B59B6"><span class="pres-slide-point-icon"><span class="material-icons">emoji_events</span></span><span data-edit-key="s3.presPoint3">정해진 목표를 다 함께 읽겠습니다</span></li>
     </ul>
     <div class="pres-goal-display" style="--step-color:#9B59B6">
       <div class="pres-goal-label">📌 이달의 우리 반 목표</div>
@@ -1323,7 +1414,7 @@
 
   <div class="scenario-box" style="border-left-color:#9B59B6">
     <div class="scenario-box-title" style="color:#9B59B6"><span class="material-icons">article</span> 사회자 대본</div>
-    <div class="scenario-text">다음은 다음 달 목표를 정하는 시간입니다.
+    <div class="scenario-text" data-edit-key="s3.script">다음은 다음 달 목표를 정하는 시간입니다.
 우리 반이 다음 달에 함께 실천하면 좋을 목표를 생각해 봅시다. <span class="cue">（잠시 생각할 시간）</span>
 
 의견이 있는 친구는 손을 들고 발표해 주세요. <span class="cue">（발표자 발표 후）</span>
@@ -1368,7 +1459,7 @@
     <div class="step-icon-wrap" style="background:linear-gradient(135deg,#F9CA24,#e8a020)"><span class="material-icons">lightbulb</span></div>
     <div class="step-title-wrap">
       <div class="step-num" style="color:#E8A020">STEP 4</div>
-      <div class="step-title" style="color:#E8A020">제안하기</div>
+      <div class="step-title" style="color:#E8A020" data-edit-key="s4.title">제안하기</div>
     </div>
   </div>
 
@@ -1376,17 +1467,17 @@
   <div class="pres-slide" style="--step-color:#E8A020">
     <div class="pres-slide-badge">STEP 4</div>
     <div class="pres-slide-icon" style="background:linear-gradient(135deg,#F9CA24,#e8a020)"><span class="material-icons">lightbulb</span></div>
-    <div class="pres-slide-title">제안하기</div>
+    <div class="pres-slide-title" data-edit-key="s4.title">제안하기</div>
     <ul class="pres-slide-points">
-      <li class="pres-slide-point" style="--step-color:#E8A020"><span class="pres-slide-point-icon"><span class="material-icons">tips_and_updates</span></span><span>우리 반을 더 나은 반으로!</span></li>
-      <li class="pres-slide-point" style="--step-color:#E8A020"><span class="pres-slide-point-icon"><span class="material-icons">record_voice_over</span></span><span>제안 내용과 이유를 함께 말해요</span></li>
-      <li class="pres-slide-point" style="--step-color:#E8A020"><span class="pres-slide-point-icon"><span class="material-icons">front_hand</span></span><span>손 들고 차례대로 발표해 주세요</span></li>
+      <li class="pres-slide-point" style="--step-color:#E8A020"><span class="pres-slide-point-icon"><span class="material-icons">tips_and_updates</span></span><span data-edit-key="s4.presPoint1">우리 반을 더 나은 반으로!</span></li>
+      <li class="pres-slide-point" style="--step-color:#E8A020"><span class="pres-slide-point-icon"><span class="material-icons">record_voice_over</span></span><span data-edit-key="s4.presPoint2">제안 내용과 이유를 함께 말해요</span></li>
+      <li class="pres-slide-point" style="--step-color:#E8A020"><span class="pres-slide-point-icon"><span class="material-icons">front_hand</span></span><span data-edit-key="s4.presPoint3">손 들고 차례대로 발표해 주세요</span></li>
     </ul>
   </div>
 
   <div class="scenario-box" style="border-left-color:#E8A020">
     <div class="scenario-box-title" style="color:#E8A020"><span class="material-icons">article</span> 사회자 대본</div>
-    <div class="scenario-text">다음은 제안하기 시간입니다.
+    <div class="scenario-text" data-edit-key="s4.script">다음은 제안하기 시간입니다.
 우리 반을 더 나은 반으로 만들기 위한 생각이 있으면 발표해 주세요. <span class="cue">（잠시 생각할 시간）</span>
 
 제안할 때에는 제안하는 이유도 함께 말해 주면 더 좋습니다.
@@ -1433,7 +1524,7 @@
     <div class="step-icon-wrap" style="background:linear-gradient(135deg,#FF85A1,#e8609a)"><span class="material-icons">school</span></div>
     <div class="step-title-wrap">
       <div class="step-num" style="color:#FF85A1">STEP 5</div>
-      <div class="step-title" style="color:#FF85A1">선생님 말씀</div>
+      <div class="step-title" style="color:#FF85A1" data-edit-key="s5.title">선생님 말씀</div>
     </div>
   </div>
 
@@ -1441,22 +1532,22 @@
   <div class="pres-slide" style="--step-color:#FF85A1">
     <div class="pres-slide-badge">STEP 5</div>
     <div class="pres-slide-icon" style="background:linear-gradient(135deg,#FF85A1,#e8609a)"><span class="material-icons">school</span></div>
-    <div class="pres-slide-title">선생님 말씀</div>
+    <div class="pres-slide-title" data-edit-key="s5.title">선생님 말씀</div>
     <ul class="pres-slide-points">
-      <li class="pres-slide-point" style="--step-color:#FF85A1"><span class="pres-slide-point-icon"><span class="material-icons">self_improvement</span></span><span>바른 자세로 앉아 주세요</span></li>
-      <li class="pres-slide-point" style="--step-color:#FF85A1"><span class="pres-slide-point-icon"><span class="material-icons">hearing</span></span><span>선생님 말씀을 귀 기울여 듣겠습니다</span></li>
+      <li class="pres-slide-point" style="--step-color:#FF85A1"><span class="pres-slide-point-icon"><span class="material-icons">self_improvement</span></span><span data-edit-key="s5.presPoint1">바른 자세로 앉아 주세요</span></li>
+      <li class="pres-slide-point" style="--step-color:#FF85A1"><span class="pres-slide-point-icon"><span class="material-icons">hearing</span></span><span data-edit-key="s5.presPoint2">선생님 말씀을 귀 기울여 듣겠습니다</span></li>
     </ul>
   </div>
 
   <div class="scenario-box" style="border-left-color:#FF85A1">
     <div class="scenario-box-title" style="color:#FF85A1"><span class="material-icons">article</span> 사회자 대본</div>
-    <div class="scenario-text">다음은 담임 선생님 말씀을 듣겠습니다.
+    <div class="scenario-text" data-edit-key="s5.script">다음은 담임 선생님 말씀을 듣겠습니다.
 선생님, 말씀 부탁드립니다. </div>
   </div>
 
   <div class="teacher-box">
     <span class="teacher-emoji"><span class="material-icons">school</span></span>
-    <div class="teacher-prompt">선생님 말씀을 바른 자세로 귀 기울여 들어요! </div>
+    <div class="teacher-prompt" data-edit-key="s5.prompt">선생님 말씀을 바른 자세로 귀 기울여 들어요! </div>
     <div class="record-title" style="justify-content:center; margin-bottom:12px"><span class="material-icons">fact_check</span> 선생님 말씀 요약 <span class="record-title-badge" style="background:#FF85A1">기록</span></div>
     <textarea class="record-textarea" id="teacher-note" rows="4" placeholder="선생님 말씀 중 중요한 내용을 정리해요&#10;예) 다음 주 현장 체험학습 준비물 안내, 급식 예절 지키기 강조"></textarea>
   </div>
@@ -1478,7 +1569,7 @@
     <div class="step-icon-wrap" style="background:linear-gradient(135deg,#2ECC71,#27ae60)"><span class="material-icons">flag</span></div>
     <div class="step-title-wrap">
       <div class="step-num" style="color:#2ECC71">STEP 6</div>
-      <div class="step-title" style="color:#2ECC71">폐회 선언</div>
+      <div class="step-title" style="color:#2ECC71" data-edit-key="s6.title">폐회 선언</div>
     </div>
   </div>
 
@@ -1486,20 +1577,18 @@
   <div class="pres-slide" style="--step-color:#2ECC71">
     <div class="pres-slide-badge">STEP 6</div>
     <div class="pres-slide-icon" style="background:linear-gradient(135deg,#2ECC71,#27ae60)"><span class="material-icons">flag</span></div>
-    <div class="pres-slide-title">폐회 선언</div>
+    <div class="pres-slide-title" data-edit-key="s6.title">폐회 선언</div>
     <ul class="pres-slide-points">
-      <li class="pres-slide-point" style="--step-color:#2ECC71"><span class="pres-slide-point-icon"><span class="material-icons">celebration</span></span><span>모두 수고했습니다!</span></li>
-      <li class="pres-slide-point" style="--step-color:#2ECC71"><span class="pres-slide-point-icon"><span class="material-icons">flag</span></span><span>이상으로 <strong id="ps6-month">0</strong>월 학급회의를 마칩니다</span></li>
-      <li class="pres-slide-point" style="--step-color:#2ECC71"><span class="pres-slide-point-icon"><span class="material-icons">favorite</span></span><span>끝까지 바르게 참여해 줘서 감사합니다</span></li>
+      <li class="pres-slide-point" style="--step-color:#2ECC71"><span class="pres-slide-point-icon"><span class="material-icons">celebration</span></span><span data-edit-key="s6.presPoint1">모두 수고했습니다!</span></li>
+      <li class="pres-slide-point" style="--step-color:#2ECC71"><span class="pres-slide-point-icon"><span class="material-icons">flag</span></span><span data-edit-key="s6.presPoint2">이상으로 <span class="month-token">0</span>월 학급회의를 마칩니다</span></li>
+      <li class="pres-slide-point" style="--step-color:#2ECC71"><span class="pres-slide-point-icon"><span class="material-icons">favorite</span></span><span data-edit-key="s6.presPoint3">끝까지 바르게 참여해 줘서 감사합니다</span></li>
     </ul>
   </div>
 
   <div class="close-card">
-    <div class="close-title">수고했어요</div>
-    <div class="close-sub">끝까지 바르게 참여해 준 친구들 감사합니다.</div>
-    <div style="font-size:0.9rem;color:rgba(255,255,255,0.6);line-height:1.7" id="closingScript">
-      이상으로 <strong id="c-month" style="color:#F9CA24">0</strong>월 우리반 학급회의를 마치겠습니다. 감사합니다.
-    </div>
+    <div class="close-title" data-edit-key="close.title">수고했어요</div>
+    <div class="close-sub" data-edit-key="close.sub">끝까지 바르게 참여해 준 친구들 감사합니다.</div>
+    <div style="font-size:0.9rem;color:rgba(255,255,255,0.6);line-height:1.7" id="closingScript" data-edit-key="close.script">이상으로 <span class="month-token">0</span>월 우리반 학급회의를 마치겠습니다. 감사합니다.</div>
   </div>
 
   <!-- 회의 결과 내보내기 -->
@@ -1575,9 +1664,43 @@
         <span class="help-card-icon" style="background:#2ECC71"><span class="material-icons">ios_share</span></span>
         <div><strong>결과 저장</strong>STEP 6에서 회의 결과를 클립보드·TXT·JSON으로 저장하거나 JSON 파일로 불러올 수 있어요.</div>
       </div>
+      <div class="help-card">
+        <span class="help-card-icon" style="background:#FF6B35"><span class="material-icons">edit</span></span>
+        <div><strong>텍스트 편집</strong>상단 <span class="material-icons" style="font-size:0.95rem;vertical-align:middle">edit</span> 버튼으로 편집 모드를 켜면 우리반 약속·대본 등을 화면에서 바로 고칠 수 있어요. <span class="material-icons" style="font-size:0.95rem;vertical-align:middle">tune</span> 버튼을 누르면 모든 문구를 한곳에서 수정하거나 백업 파일로 내보내기·불러오기 할 수 있어요. 수정 내용은 자동 저장돼요.</div>
+      </div>
     </div>
     <div class="help-footer">Created by. 교육뮤지컬 꿈꾸는 치수쌤</div>
   </div>
+</div>
+
+<!-- CONTENT SETTINGS MODAL -->
+<div class="help-modal" id="contentModal" role="dialog" aria-modal="true" aria-labelledby="contentModalTitle">
+  <div class="help-modal-content cs-modal-content">
+    <div class="help-modal-header">
+      <div class="help-modal-title-wrap">
+        <div class="help-modal-title" id="contentModalTitle">콘텐츠 설정</div>
+        <div class="help-modal-sub">앱에 표시되는 문구를 수정해요 · 변경 즉시 저장</div>
+      </div>
+      <button class="help-close" onclick="closeContentModal()" aria-label="닫기">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    <div class="cs-toolbar">
+      <button class="cs-btn" type="button" onclick="exportContentSettings()"><span class="material-icons">download</span> 설정 내보내기</button>
+      <label class="cs-btn" for="contentFileInput"><span class="material-icons">upload_file</span> 설정 불러오기</label>
+      <input type="file" id="contentFileInput" accept=".json" style="display:none" onchange="loadContentSettings(event)">
+      <button class="cs-btn danger" type="button" onclick="resetAllContent()"><span class="material-icons">restart_alt</span> 전체 기본값</button>
+    </div>
+    <div class="cs-body" id="contentModalBody"></div>
+    <div class="help-footer">수정 내용은 이 브라우저에 자동 저장돼요. 다른 기기로 옮기려면 「설정 내보내기 / 불러오기」를 이용하세요.</div>
+  </div>
+</div>
+
+<!-- 편집 모드 안내 바 -->
+<div class="edit-mode-bar" id="editModeBar">
+  <span class="material-icons">edit</span>
+  <span><b>편집 모드</b> · 점선 영역을 클릭해 텍스트를 바로 수정하세요.<span class="hide-sm"> 「<b>{월}</b>」은 회의 월로 자동 표시돼요.</span></span>
+  <button class="edit-done-btn" type="button" onclick="toggleEditMode()">편집 완료</button>
 </div>
 
 <script>
@@ -1595,9 +1718,294 @@
   let currentMode = 'record';
 
   // ──────────────────────────────────────────
+  // CONTENT EDITING (텍스트 수정 · localStorage · 백업)
+  // ──────────────────────────────────────────
+  const CONTENT_STORE_KEY = 'classmeeting_content_v1';
+
+  // 편집 가능한 핵심 콘텐츠 정의 (key · 그룹 · 라벨 · 기본값)
+  // {월} 토큰은 회의 월로 자동 치환되며, 같은 key를 가진 요소는 함께 동기화됩니다.
+  const CONTENT_SCHEMA = [
+    { key:'header.title',    group:'헤더',                label:'앱 제목',        def:'우리반 학급회의' },
+    { key:'header.subtitle', group:'헤더',                label:'앱 부제',        def:'모두를 위한 학급회의 도우미' },
+
+    { key:'s1.title',      group:'STEP 1 · 개회선언',     label:'단계 제목',       def:'개회선언 & 우리반 약속 선서' },
+    { key:'s1.pres1Title', group:'STEP 1 · 개회선언',     label:'슬라이드1 제목',  def:'개회선언' },
+    { key:'s1.presPoint1', group:'STEP 1 · 개회선언',     label:'슬라이드1 항목 ①', def:'바르게 앉아 주세요' },
+    { key:'s1.presPoint2', group:'STEP 1 · 개회선언',     label:'슬라이드1 항목 ②', def:'{월}월 우리반 학급회의를 시작합니다' },
+    { key:'s1.pres2Title', group:'STEP 1 · 개회선언',     label:'슬라이드2 제목',  def:'우리반 약속 선서' },
+    { key:'s1.script',     group:'STEP 1 · 개회선언',     label:'사회자 대본', multiline:true,
+      def:'안녕하세요. 이제 우리반 학급회의를 시작하려고 합니다.\n친구들은 바르게 앉아 주시기 바랍니다.\n\n지금부터 {월}월 우리반 학급회의를 시작합니다.\n먼저 우리반 약속을 함께 읽겠습니다.\n한 문장씩 제가 읽으면, 여러분은 따라 읽어 주십시오.' },
+    { key:'oath.1',      group:'STEP 1 · 우리반 약속',    label:'약속 ① (하나)',  def:'나의 마음과 생각을 깊이 들여다보겠습니다.' },
+    { key:'oath.2',      group:'STEP 1 · 우리반 약속',    label:'약속 ② (둘)',    def:'세상을 따뜻한 눈으로 바라보겠습니다.' },
+    { key:'oath.3',      group:'STEP 1 · 우리반 약속',    label:'약속 ③ (셋)',    def:'내가 나눌 수 있는 것을 생각하고 나눔을 실천하겠습니다.' },
+    { key:'oath.banner', group:'STEP 1 · 우리반 약속',    label:'선서 완료 배너',  def:'선서 완료! 우리 반 최고입니다.' },
+
+    { key:'s2.title',      group:'STEP 2 · 거울회의',     label:'단계 제목',       def:'거울(돌아보기) 회의' },
+    { key:'s2.presPoint1', group:'STEP 2 · 거울회의',     label:'슬라이드 항목 ①', def:'자치팀별로 모여 이야기 나누기' },
+    { key:'s2.presPoint2', group:'STEP 2 · 거울회의',     label:'슬라이드 항목 ②', def:'좋았던 점 · 아쉬웠던 점 · 바라는 점' },
+    { key:'s2.presPoint3', group:'STEP 2 · 거울회의',     label:'슬라이드 항목 ③', def:'팀별 대표 발표 시작!' },
+    { key:'s2.script',     group:'STEP 2 · 거울회의',     label:'사회자 대본', multiline:true,
+      def:'다음은 거울(돌아보기) 회의 시간입니다.\n거울 회의는 좋았던 점, 아쉬웠던 점, 바라는 점을 이야기하는 시간입니다.\n\n먼저 자치팀별로 모여 이야기를 나누겠습니다.\n좋았던 점, 아쉬웠던 점, 바라는 점을 차례대로 이야기해 주세요.\n친구의 말을 끊지 않고 끝까지 잘 들어주면 좋겠습니다. （잠시 회의 시간）\n\n이제 자치팀별 발표를 시작하겠습니다.\n00팀 발표자 학생부터 차례대로 일어나 발표해 주세요.\n\n발표한 학생들에게 박수를 쳐줍시다. \n친구들의 의견을 잘 들으며 우리 반을 더 좋은 반으로 만들어 가면 좋겠습니다.' },
+    { key:'s2.labelGood', group:'STEP 2 · 거울회의',      label:'기록 라벨 ①',     def:'좋았던 점' },
+    { key:'s2.labelBad',  group:'STEP 2 · 거울회의',      label:'기록 라벨 ②',     def:'아쉬웠던 점' },
+    { key:'s2.labelWish', group:'STEP 2 · 거울회의',      label:'기록 라벨 ③',     def:'바라는 점' },
+
+    { key:'s3.title',      group:'STEP 3 · 목표정하기',   label:'단계 제목',       def:'다음 달 목표 정하기' },
+    { key:'s3.presPoint1', group:'STEP 3 · 목표정하기',   label:'슬라이드 항목 ①', def:'다음 달 목표를 함께 생각해요' },
+    { key:'s3.presPoint2', group:'STEP 3 · 목표정하기',   label:'슬라이드 항목 ②', def:'의견 발표 후 투표로 결정' },
+    { key:'s3.presPoint3', group:'STEP 3 · 목표정하기',   label:'슬라이드 항목 ③', def:'정해진 목표를 다 함께 읽겠습니다' },
+    { key:'s3.script',     group:'STEP 3 · 목표정하기',   label:'사회자 대본', multiline:true,
+      def:'다음은 다음 달 목표를 정하는 시간입니다.\n우리 반이 다음 달에 함께 실천하면 좋을 목표를 생각해 봅시다. （잠시 생각할 시간）\n\n의견이 있는 친구는 손을 들고 발표해 주세요. （발표자 발표 후）\n\n여러 친구들의 의견을 들었습니다.\n이제 나온 의견을 바탕으로 우리 반의 다음 달 목표를 정하겠습니다. （투표 진행）\n\n정해진 목표를 다시 한번 함께 말해 보겠습니다. （정한 목표 함께 읽기）\n우리 모두 다음 달 목표를 기억하고 함께 실천해 보면 좋겠습니다.' },
+
+    { key:'s4.title',      group:'STEP 4 · 제안하기',     label:'단계 제목',       def:'제안하기' },
+    { key:'s4.presPoint1', group:'STEP 4 · 제안하기',     label:'슬라이드 항목 ①', def:'우리 반을 더 나은 반으로!' },
+    { key:'s4.presPoint2', group:'STEP 4 · 제안하기',     label:'슬라이드 항목 ②', def:'제안 내용과 이유를 함께 말해요' },
+    { key:'s4.presPoint3', group:'STEP 4 · 제안하기',     label:'슬라이드 항목 ③', def:'손 들고 차례대로 발표해 주세요' },
+    { key:'s4.script',     group:'STEP 4 · 제안하기',     label:'사회자 대본', multiline:true,
+      def:'다음은 제안하기 시간입니다.\n우리 반을 더 나은 반으로 만들기 위한 생각이 있으면 발표해 주세요. （잠시 생각할 시간）\n\n제안할 때에는 제안하는 이유도 함께 말해 주면 더 좋습니다.\n여러분은 발표자의 말을 잘 들어 주세요. （발표 후）\n\n좋은 의견을 내 준 학생들에게 박수 부탁드립니다. \n오늘 나온 제안은 함께 생각해 보고 실천할 수 있도록 하겠습니다.' },
+
+    { key:'s5.title',      group:'STEP 5 · 선생님 말씀',  label:'단계 제목',       def:'선생님 말씀' },
+    { key:'s5.presPoint1', group:'STEP 5 · 선생님 말씀',  label:'슬라이드 항목 ①', def:'바른 자세로 앉아 주세요' },
+    { key:'s5.presPoint2', group:'STEP 5 · 선생님 말씀',  label:'슬라이드 항목 ②', def:'선생님 말씀을 귀 기울여 듣겠습니다' },
+    { key:'s5.script',     group:'STEP 5 · 선생님 말씀',  label:'사회자 대본', multiline:true,
+      def:'다음은 담임 선생님 말씀을 듣겠습니다.\n선생님, 말씀 부탁드립니다. ' },
+    { key:'s5.prompt',     group:'STEP 5 · 선생님 말씀',  label:'안내 문구',       def:'선생님 말씀을 바른 자세로 귀 기울여 들어요! ' },
+
+    { key:'s6.title',      group:'STEP 6 · 폐회선언',     label:'단계 제목',       def:'폐회 선언' },
+    { key:'s6.presPoint1', group:'STEP 6 · 폐회선언',     label:'슬라이드 항목 ①', def:'모두 수고했습니다!' },
+    { key:'s6.presPoint2', group:'STEP 6 · 폐회선언',     label:'슬라이드 항목 ②', def:'이상으로 {월}월 학급회의를 마칩니다' },
+    { key:'s6.presPoint3', group:'STEP 6 · 폐회선언',     label:'슬라이드 항목 ③', def:'끝까지 바르게 참여해 줘서 감사합니다' },
+    { key:'close.title',   group:'STEP 6 · 폐회선언',     label:'폐회 인사 제목',  def:'수고했어요' },
+    { key:'close.sub',     group:'STEP 6 · 폐회선언',     label:'폐회 인사 부제',  def:'끝까지 바르게 참여해 준 친구들 감사합니다.' },
+    { key:'close.script',  group:'STEP 6 · 폐회선언',     label:'폐회 대본', multiline:true,
+      def:'이상으로 {월}월 우리반 학급회의를 마치겠습니다. 감사합니다.' },
+  ];
+
+  const CONTENT_DEFAULTS = {};
+  CONTENT_SCHEMA.forEach(it => { CONTENT_DEFAULTS[it.key] = it.def; });
+
+  let contentOverrides = {};   // 기본값과 다른 항목만 저장 { key: text }
+
+  function loadContentOverrides() {
+    try {
+      const raw = localStorage.getItem(CONTENT_STORE_KEY);
+      if (raw) {
+        const o = JSON.parse(raw);
+        if (o && typeof o === 'object') contentOverrides = o;
+      }
+    } catch (e) { contentOverrides = {}; }
+  }
+  function saveContentOverrides() {
+    try { localStorage.setItem(CONTENT_STORE_KEY, JSON.stringify(contentOverrides)); } catch (e) {}
+  }
+  function getContent(key) {
+    return Object.prototype.hasOwnProperty.call(contentOverrides, key)
+      ? contentOverrides[key]
+      : (CONTENT_DEFAULTS[key] != null ? CONTENT_DEFAULTS[key] : '');
+  }
+  function setContent(key, value) {
+    if (value === CONTENT_DEFAULTS[key]) delete contentOverrides[key];
+    else contentOverrides[key] = value;
+    saveContentOverrides();
+  }
+  function getMonth() {
+    return document.getElementById('monthInput').value || '0';
+  }
+
+  // 평문(+토큰)을 표시용 HTML로 변환
+  function renderContentHTML(raw) {
+    let html = esc(raw);
+    html = html.replace(/\{월\}/g, '<span class="month-token">' + getMonth() + '</span>');
+    html = html.replace(/（([^）]*)）/g, '<span class="cue">（$1）</span>');
+    return html;
+  }
+
+  // 전체 편집 항목을 현재 콘텐츠로 렌더
+  function applyContent() {
+    document.querySelectorAll('[data-edit-key]').forEach(el => {
+      el.innerHTML = renderContentHTML(getContent(el.getAttribute('data-edit-key')));
+    });
+  }
+  // 특정 key를 가진 모든 요소만 다시 렌더 (편집 중 요소는 평문 동기화)
+  function applyContentKey(key) {
+    document.querySelectorAll('[data-edit-key="' + key + '"]').forEach(el => {
+      if (el.isContentEditable) el.textContent = getContent(key);
+      else el.innerHTML = renderContentHTML(getContent(key));
+    });
+  }
+  // {월} 토큰이 들어간 항목만 다시 렌더 (월 변경 시)
+  function refreshMonthContent() {
+    document.querySelectorAll('[data-edit-key]').forEach(el => {
+      const raw = getContent(el.getAttribute('data-edit-key'));
+      if (raw.indexOf('{월}') !== -1 && !el.isContentEditable) {
+        el.innerHTML = renderContentHTML(raw);
+      }
+    });
+  }
+
+  // ── 인라인 편집 모드 ──
+  let editMode = false;
+  function toggleEditMode() { setEditMode(!editMode); }
+  function setEditMode(on) {
+    editMode = on;
+    document.body.classList.toggle('edit-mode', on);
+    document.getElementById('editToggleBtn').classList.toggle('edit-active', on);
+    document.getElementById('editModeBar').classList.toggle('show', on);
+
+    const els = document.querySelectorAll('[data-edit-key]');
+    if (on) {
+      // 대본 아코디언을 모두 펼쳐 편집 가능하게
+      document.querySelectorAll('.scenario-box').forEach(b => b.classList.add('open'));
+      els.forEach(el => {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'false');
+        el.textContent = getContent(el.getAttribute('data-edit-key')); // 토큰이 보이는 평문으로
+      });
+      showToast('편집 모드를 켰어요. 점선 영역을 눌러 수정하세요.');
+    } else {
+      els.forEach(el => el.removeAttribute('contenteditable'));
+      applyContent();   // 서식 적용해 다시 렌더
+      showToast('편집 모드를 껐어요. 수정 내용이 저장되었습니다.');
+    }
+  }
+
+  // 인라인 편집 입력 처리 (이벤트 위임)
+  document.addEventListener('input', (e) => {
+    if (!editMode) return;
+    const el = e.target.closest && e.target.closest('[data-edit-key]');
+    if (!el || !el.isContentEditable) return;
+    const key = el.getAttribute('data-edit-key');
+    const val = el.innerText.replace(/ /g, ' ');
+    setContent(key, val);
+    // 같은 key의 다른 요소를 실시간 동기화 (편집 중 요소 자신은 제외)
+    document.querySelectorAll('[data-edit-key="' + key + '"]').forEach(other => {
+      if (other !== el) other.textContent = val;
+    });
+  });
+
+  // ── 콘텐츠 설정 모달 ──
+  function openContentModal() {
+    buildContentModal();
+    document.getElementById('contentModal').classList.add('open');
+  }
+  function closeContentModal() {
+    document.getElementById('contentModal').classList.remove('open');
+  }
+  function buildContentModal() {
+    const body = document.getElementById('contentModalBody');
+    body.innerHTML = '';
+    let lastGroup = null, section = null;
+    CONTENT_SCHEMA.forEach(item => {
+      if (item.group !== lastGroup) {
+        section = document.createElement('div');
+        section.className = 'cs-group';
+        const h = document.createElement('div');
+        h.className = 'cs-group-title';
+        h.textContent = item.group;
+        section.appendChild(h);
+        body.appendChild(section);
+        lastGroup = item.group;
+      }
+      const row = document.createElement('div');
+      row.className = 'cs-row';
+
+      const label = document.createElement('label');
+      label.className = 'cs-label';
+      label.textContent = item.label;
+
+      const field = document.createElement('div');
+      field.className = 'cs-field';
+
+      const input = item.multiline ? document.createElement('textarea') : document.createElement('input');
+      input.className = 'cs-input';
+      if (item.multiline) {
+        const lines = getContent(item.key).split('\n').length;
+        input.rows = Math.min(12, Math.max(3, lines));
+      } else {
+        input.type = 'text';
+      }
+      input.value = getContent(item.key);
+      input.addEventListener('input', () => {
+        setContent(item.key, input.value);
+        applyContentKey(item.key);
+      });
+
+      const reset = document.createElement('button');
+      reset.type = 'button';
+      reset.className = 'cs-reset';
+      reset.title = '기본값으로 되돌리기';
+      reset.innerHTML = '<span class="material-icons">restart_alt</span>';
+      reset.addEventListener('click', () => {
+        input.value = CONTENT_DEFAULTS[item.key];
+        setContent(item.key, CONTENT_DEFAULTS[item.key]);
+        applyContentKey(item.key);
+      });
+
+      field.appendChild(input);
+      field.appendChild(reset);
+      row.appendChild(label);
+      row.appendChild(field);
+      section.appendChild(row);
+    });
+  }
+
+  // ── 백업: 콘텐츠 설정 내보내기 / 불러오기 ──
+  function exportContentSettings() {
+    const content = {};
+    CONTENT_SCHEMA.forEach(it => { content[it.key] = getContent(it.key); });
+    const payload = {
+      _type: 'classmeeting_content',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      content: content,
+    };
+    download('우리반_콘텐츠설정.json', JSON.stringify(payload, null, 2), 'application/json');
+    showToast('콘텐츠 설정을 내보냈습니다.');
+  }
+  function loadContentSettings(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const d = JSON.parse(e.target.result);
+        if (!d || d._type !== 'classmeeting_content' || typeof d.content !== 'object')
+          throw new Error('invalid');
+        contentOverrides = {};
+        Object.keys(d.content).forEach(k => {
+          if (Object.prototype.hasOwnProperty.call(CONTENT_DEFAULTS, k)) {
+            const v = String(d.content[k]);
+            if (v !== CONTENT_DEFAULTS[k]) contentOverrides[k] = v;
+          }
+        });
+        saveContentOverrides();
+        applyContent();
+        syncMonth();
+        buildContentModal();
+        showToast('콘텐츠 설정을 불러왔습니다.');
+      } catch (err) {
+        showToast('콘텐츠 설정 파일이 아니에요. (회의 기록 파일과 다릅니다)');
+      }
+      event.target.value = '';
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+  function resetAllContent() {
+    if (!confirm('모든 텍스트를 기본값으로 되돌릴까요?\n저장된 수정 내용이 모두 사라집니다.')) return;
+    contentOverrides = {};
+    saveContentOverrides();
+    applyContent();
+    syncMonth();
+    buildContentModal();
+    showToast('모든 텍스트를 기본값으로 되돌렸습니다.');
+  }
+
+  // ──────────────────────────────────────────
   // INIT
   // ──────────────────────────────────────────
   window.addEventListener('DOMContentLoaded', () => {
+    loadContentOverrides();
+    applyContent();            // 저장된 콘텐츠(또는 기본값) 화면에 반영
     addGoalOpinion();
     addGoalOpinion();
     addSuggestion();
@@ -1613,8 +2021,8 @@
   // Month sync
   document.getElementById('monthInput').addEventListener('input', syncMonth);
   function syncMonth() {
-    const v = document.getElementById('monthInput').value || '0';
-    document.querySelectorAll('#s1-month, #c-month, #ps1-month, #ps6-month').forEach(el => el.textContent = v);
+    // {월} 토큰이 들어간 편집 항목을 현재 월로 다시 렌더
+    refreshMonthContent();
   }
 
   function setMode(mode) {
@@ -1635,7 +2043,7 @@
       btn.className = 'script-toggle';
       btn.innerHTML = `<span class="script-toggle-left">${title.innerHTML}</span><span class="material-icons expand-icon">expand_more</span>`;
       btn.addEventListener('click', () => {
-        if (currentMode !== 'record') return;
+        if (currentMode !== 'record' || editMode) return;
         box.classList.toggle('open');
       });
       title.remove();
@@ -1663,6 +2071,8 @@
   document.addEventListener('click', (e) => {
     const modal = document.getElementById('helpModal');
     if (modal.classList.contains('open') && e.target === modal) closeHelpModal();
+    const cModal = document.getElementById('contentModal');
+    if (cModal.classList.contains('open') && e.target === cModal) closeContentModal();
   });
 
   // ──────────────────────────────────────────
@@ -1699,7 +2109,7 @@
   // oath celebration
   let oathShown = false;
   document.addEventListener('click', (e) => {
-    if (oathShown) return;
+    if (oathShown || editMode) return;
     if (e.target.closest('.oath-item')) {
       oathShown = true;
       const b = document.getElementById('oathBanner');
